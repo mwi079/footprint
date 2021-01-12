@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {getYears} from './ApiService'
-
+import {getMakes, getYears} from './ApiService'
+import Forms from './carForms/forms'
 
 
 function App() {
 
 const [years, setYears] = useState([]);
+const [makes, setMakes] = useState([]);
 
 useEffect (()=>{
   getYears()
@@ -14,11 +15,16 @@ useEffect (()=>{
     })
 })
 
+const makesOfYear = (year) =>{
+  getMakes(year)
+  .then(({ data }) => {
+    setMakes(data.menuItem.map((item) => item.value));
+  });
+}
+
   return (
-    years.map(year=>{
-      return <div>{year}</div>
-    }
-  ))
+    <Forms years={years} makes={makes} makesOfYear={makesOfYear}/>
+  )
 }
 
 export default App;

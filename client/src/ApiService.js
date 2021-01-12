@@ -6,8 +6,11 @@ export function getYears() {
   return get(base_carUrl+'year')
 }
 
+export function getMakes(year) {
+  return get(`${base_carUrl}make?year=${year}`)
+}
+
 function get(url) {
   return axios.get(url)
     .then(result=>result.status<400? result:Promise.reject(result))
-    //.then(result=>result.status!==204? result.json(): result)})
 }
