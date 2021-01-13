@@ -8,7 +8,7 @@ import {
 } from './ApiService';
 import CarForms from './carForms/forms';
 import Footprint from './footprint/footprint';
-import Distance from './distanceForms/distance';
+//import Distance from './distanceForms/distance';
 
 function App() {
   const [car, setCar] = useState({});
@@ -85,8 +85,6 @@ function App() {
   };
 
   const getCarID = (option) => {
-    console.log(option);
-    console.log(car);
     if (option !== null) {
       setCar({
         year: car.year,
@@ -109,13 +107,12 @@ function App() {
   };
 
   const journeyDistance = (distance) => {
-    setJourney(distance.target.value);
+    setJourney({ distance, CO2: '' });
   };
 
   const journeyCO2 = () => {
-    //! on submitting car and distance
-
     getGPM(car.id).then(({ data }) => {
+      console.log(data.co2TailpipeGpm);
       setCar({
         year: car.year,
         make: car.make,
@@ -124,13 +121,15 @@ function App() {
         id: car.id,
         gpm: data.co2TailpipeGpm,
       });
+      setJourney({
+        distance: journey.distance,
+        CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
+      });
     });
-
-    setJourney(+journey.distance * +car.gpm);
   };
 
   return (
-    <div>
+    <div className="overallContainer">
       <CarForms
         years={years}
         makes={makes}
@@ -140,9 +139,12 @@ function App() {
         modelsOfMakes={modelsOfMakes}
         optionsOfModels={optionsOfModels}
         getCarID={getCarID}
+        journeyDistance={journeyDistance}
+        journey={journey}
+        car={car}
+        journeyCO2={journeyCO2}
       />
-      <Distance journeyDistance={journeyDistance} journey={journey} />
-      <Footprint car={car} journey={journey} />
+      <Footprint journey={journey} />
     </div>
   );
 }
