@@ -1,41 +1,88 @@
-import React, {useEffect, useState} from 'react';
-import {getMakes, getYears, getModels} from './ApiService'
-import Forms from './carForms/forms'
-
+import React, { useEffect, useState } from 'react';
+import { getMakes, getYears, getModels, getOptions } from './ApiService';
+import Forms from './carForms/forms';
+import Footprint from './footprint/footprint';
 
 function App() {
+  const [car, setCar] = useState({});
 
-  const [car,setCar] =useState ({})
+  const [years, setYears] = useState(['years']);
+  const [makes, setMakes] = useState(['makes']);
+  const [models, setModels] = useState(['models']);
+  const [options, setOptions] = useState(['options']);
 
-  const [years, setYears] = useState([]);
-  const [makes, setMakes] = useState([]);
-  const [models, setModels] = useState([]);
+  useEffect(() => {
+    getYears().then(({ data }) => {
+      setYears(data.menuItem.map((item) => item.value));
+    });
+  }, []);
 
-  useEffect (()=>{
-    getYears()
-      .then(({data})=>{
-        setYears(data.menuItem.map(item=>item.value))
-      })
-  },[])
-
-  const makesOfYear = (year) =>{
-    setCar({year,make:'',model:'', option:'', id:''})
-    getMakes(year)
-    .then(({ data }) => {
+  const makesOfYear = (year) => {
+    setCar({
+      year,
+      make: '',
+      model: '',
+      option: '',
+      id: '',
+    });
+    getMakes(year).then(({ data }) => {
       setMakes(data.menuItem.map((item) => item.value));
     });
-  }
+  };
 
-  const modelsOfMakes = (make) =>{
-    getModels(make,car)
-    .then(({ data }) => {
+  const modelsOfMakes = (make) => {
+    setCar({
+      year: car.year,
+      make,
+      model: '',
+      option: '',
+      id: '',
+    });
+    getModels(make, car).then(({ data }) => {
       setModels(data.menuItem.map((item) => item.value));
     });
-  }
+  };
 
-    return (
-      <Forms years={years} makes={makes} models={models} makesOfYear={makesOfYear} modelsOfMakes={modelsOfMakes}/>
-    )
-  }
+  const optionsOfModels = (model) => {
+    setCar({
+      year: car.year,
+      make: car.make,
+      model,
+      option: '',
+      id: '',
+    });
+    getOptions(model, car).then(({ data }) => {
+      if (data.menuItem.length) setOptions(data.menuItem.map((item) => item));
+      else getCarID(data.menuItem);
+    });
+  };
+
+  const getCarID = (option) => {
+    setCar({
+      year: car.year,
+      make: car.make,
+      model: car.model,
+      option: option.text,
+      id: option.value,
+    });
+    console.log(option);
+  };
+
+  return (
+    <div>
+      <Forms
+        years={years}
+        makes={makes}
+        models={models}
+        options={options}
+        makesOfYear={makesOfYear}
+        modelsOfMakes={modelsOfMakes}
+        optionsOfModels={optionsOfModels}
+        getCarID={getCarID}
+      />
+      <Footprint car={car} />
+    </div>
+  );
+}
 
 export default App;
