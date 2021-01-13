@@ -13,9 +13,9 @@ export default function forms({
   getCarID,
 }) {
   return (
-    <div>
+    <center>
       <Autocomplete
-        className="carForm"
+        className="carForms"
         onChange={(_, year) => makesOfYear(year)}
         options={years}
         renderInput={(params) => (
@@ -23,7 +23,7 @@ export default function forms({
         )}
       />
       <Autocomplete
-        className="makesForm"
+        className="carForms"
         onChange={(_, make) => modelsOfMakes(make)}
         disabled={makes[0] === 'makes'}
         options={makes}
@@ -33,7 +33,7 @@ export default function forms({
         )}
       />
       <Autocomplete
-        className="modelsForm"
+        className="carForms"
         onChange={(_, model) => optionsOfModels(model)}
         disabled={models[0] === 'models'}
         options={models}
@@ -43,7 +43,7 @@ export default function forms({
         )}
       />
       <Autocomplete
-        className="optionsForm"
+        className="carForms"
         onChange={(_, option) => getCarID(option)}
         disabled={options[0] === 'options'}
         options={options}
@@ -53,6 +53,6 @@ export default function forms({
           <TextField {...params} label="Options" variant="outlined" />
         )}
       />
-    </div>
+    </center>
   );
 }
