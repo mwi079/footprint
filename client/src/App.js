@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { getMakes, getYears, getModels, getOptions } from './ApiService';
+import {
+  getMakes,
+  getYears,
+  getModels,
+  getOptions,
+  getGPM,
+} from './ApiService';
 import CarForms from './carForms/forms';
 import Footprint from './footprint/footprint';
+import Distance from './distanceForms/distance';
 
 function App() {
   const [car, setCar] = useState({});
+  const [journey, setJourney] = useState({});
 
   const [years, setYears] = useState(['years']);
   const [makes, setMakes] = useState(['makes']);
@@ -27,6 +35,7 @@ function App() {
       model: '',
       option: '',
       id: '',
+      gpm: '',
     });
 
     if (year !== null) {
@@ -45,6 +54,7 @@ function App() {
       model: '',
       option: '',
       id: '',
+      gpm: '',
     });
 
     if (make !== null) {
@@ -62,17 +72,21 @@ function App() {
       model,
       option: '',
       id: '',
+      gpm: '',
     });
-
     if (model !== null) {
       getOptions(model, car).then(({ data }) => {
         if (data.menuItem.length) setOptions(data.menuItem.map((item) => item));
-        else getCarID(data.menuItem);
+        else {
+          setOptions([data.menuItem]);
+        }
       });
     }
   };
 
   const getCarID = (option) => {
+    console.log(option);
+    console.log(car);
     if (option !== null) {
       setCar({
         year: car.year,
@@ -80,6 +94,7 @@ function App() {
         model: car.model,
         option: option.text,
         id: option.value,
+        gpm: '',
       });
     } else {
       setCar({
@@ -88,8 +103,30 @@ function App() {
         model: car.model,
         option: '',
         id: '',
+        gpm: '',
       });
     }
+  };
+
+  const journeyDistance = (distance) => {
+    setJourney(distance.target.value);
+  };
+
+  const journeyCO2 = () => {
+    //! on submitting car and distance
+
+    getGPM(car.id).then(({ data }) => {
+      setCar({
+        year: car.year,
+        make: car.make,
+        model: car.model,
+        option: car.option,
+        id: car.id,
+        gpm: data.co2TailpipeGpm,
+      });
+    });
+
+    setJourney(+journey.distance * +car.gpm);
   };
 
   return (
@@ -104,7 +141,8 @@ function App() {
         optionsOfModels={optionsOfModels}
         getCarID={getCarID}
       />
-      <Footprint car={car} />
+      <Distance journeyDistance={journeyDistance} journey={journey} />
+      <Footprint car={car} journey={journey} />
     </div>
   );
 }
