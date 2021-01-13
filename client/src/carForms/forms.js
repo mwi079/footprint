@@ -2,12 +2,7 @@ import { TextField, } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import './forms.css'
 
-// props.years.map(year=>{
-//   return <div>{year}</div>
-// })
-
-
-export default function forms({years,makes,makesOfYear}) {
+export default function forms({years,makes,models,makesOfYear,modelsOfMakes}) {
   return (
     <div>
       <Autocomplete
@@ -20,11 +15,20 @@ export default function forms({years,makes,makesOfYear}) {
       />  
       <Autocomplete
       className='makesForm'
-      //onChange={(_, year) => makesOfYear(year)}
+      onChange={(_, make) => modelsOfMakes(make)}
       disabled={!makes.length}
       options={makes}
       renderInput={(params) => (
         <TextField {...params} label='Makes' variant='outlined'/>
+      )}
+      />
+      <Autocomplete
+      className='modelsForm'
+      //onChange={(_, model) => optionsOfModels(model)}
+      disabled={!models.length}
+      options={models}
+      renderInput={(params) => (
+        <TextField {...params} label='Models' variant='outlined'/>
       )}
       />
     </div>

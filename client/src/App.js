@@ -1,30 +1,41 @@
 import React, {useEffect, useState} from 'react';
-import {getMakes, getYears} from './ApiService'
+import {getMakes, getYears, getModels} from './ApiService'
 import Forms from './carForms/forms'
 
 
 function App() {
 
-const [years, setYears] = useState([]);
-const [makes, setMakes] = useState([]);
+  const [car,setCar] =useState ({})
 
-useEffect (()=>{
-  getYears()
-    .then(({data})=>{
-      setYears(data.menuItem.map(item=>item.value))
-    })
-})
+  const [years, setYears] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]);
 
-const makesOfYear = (year) =>{
-  getMakes(year)
-  .then(({ data }) => {
-    setMakes(data.menuItem.map((item) => item.value));
-  });
-}
+  useEffect (()=>{
+    getYears()
+      .then(({data})=>{
+        setYears(data.menuItem.map(item=>item.value))
+      })
+  },[])
 
-  return (
-    <Forms years={years} makes={makes} makesOfYear={makesOfYear}/>
-  )
-}
+  const makesOfYear = (year) =>{
+    setCar({year,make:'',model:'', option:'', id:''})
+    getMakes(year)
+    .then(({ data }) => {
+      setMakes(data.menuItem.map((item) => item.value));
+    });
+  }
+
+  const modelsOfMakes = (make) =>{
+    getModels(make,car)
+    .then(({ data }) => {
+      setModels(data.menuItem.map((item) => item.value));
+    });
+  }
+
+    return (
+      <Forms years={years} makes={makes} models={models} makesOfYear={makesOfYear} modelsOfMakes={modelsOfMakes}/>
+    )
+  }
 
 export default App;
