@@ -1,9 +1,9 @@
-export default function footprint({ journey }) {
+export default function footprint({ journey, homeUse }) {
   return (
     <div id="test">
       <center className="resultsContainer">
-        <h1>{journey.CO2}</h1>
-        <h1>kg of Carbon Dioxide were produced by your journey</h1>
+        <h2>{journey.CO2} kg of CO2 on journey</h2>
+        <h2>{homeUse.CO2} kg of CO2 from home</h2>
       </center>
     </div>
   );

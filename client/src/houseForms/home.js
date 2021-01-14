@@ -6,7 +6,9 @@ export default function Home({
   updateRange,
   postcode,
   dateRange,
-  intensity,
+  homeCO2,
+  updateHomeUse,
+  homeUse,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -14,17 +16,19 @@ export default function Home({
     if (
       dateRange.from === undefined ||
       dateRange.to === undefined ||
-      dateRange.from > dateRange.to
+      dateRange.from >= dateRange.to
     )
       return alert('Valid date range required');
-    intensity();
+    if (homeUse.energy === undefined)
+      return alert('Home energy consumption required');
+    homeCO2();
   }
 
   return (
     <div>
       <center>
         <h2>Select range</h2>
-        <form className="rangeForm" noValidate>
+        <form className="homeForm" onSubmit={handleSubmit} noValidate>
           <TextField
             id="from"
             label="From"
@@ -51,16 +55,24 @@ export default function Home({
               updateRange(event.target.value, event.target.id)
             }
           />
-        </form>
-        <p></p>
-        <h2>Enter Postcode</h2>
-        <form className="postcodeForm" onSubmit={handleSubmit}>
+          <p></p>
+          <h2>Enter Postcode</h2>
           <TextField
             variant="outlined"
             label="postcode"
             placeholder="format: AB10 6RG"
             onChange={(event) => {
               updatePostcode(toOutcode(event.target.value));
+            }}
+          />
+          <h2>Enter Home Energy Consumption over that period</h2>
+          <TextField
+            variant="outlined"
+            type="number"
+            label="Home Energy"
+            placeholder="in kWh"
+            onChange={(event) => {
+              updateHomeUse(event.target.value);
             }}
           />
           <Button

@@ -138,29 +138,29 @@ function App() {
   };
 
   const updateRange = (date, option) => {
-    console.log('date', date);
-    console.log('option', option);
     if (option === 'from') {
       setdateRange({ from: date, to: dateRange.to });
     } else setdateRange({ from: dateRange.from, to: date });
   };
 
-  const intensity = () => {
-    let sum = 0;
-    let entries = 0;
-    let average = 0;
-    getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
-      entries = data.data.data.length;
-      data.data.data.map((entry) => (sum += entry.intensity.forecast));
-      average = sum / entries;
-    });
-    setHomeUse({ intensity: average, usage: homeUse.usage, CO2: '' });
+  const updateHomeUse = (energy) => {
+    setHomeUse({ intensity: homeUse.intensity, energy, CO2: '' });
   };
 
-  const homeUsage = () => {};
-
   const homeCO2 = () => {
-    //todo
+    let sum = 0;
+    let entries = 0;
+    let intensity = 0;
+    getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
+      entries = data.data.data.length;
+      data.data.data.map((entry) => {
+        //console.log(entry);
+        return (sum += entry.intensity.forecast);
+      });
+      intensity = sum / entries;
+      let CO2 = (+homeUse.energy * +intensity) / 1000;
+      setHomeUse({ intensity, energy: homeUse.energy, CO2 });
+    });
   };
 
   return (
@@ -180,13 +180,15 @@ function App() {
         journeyCO2={journeyCO2}
       />
       <Home
-        intensity={intensity}
+        homeCO2={homeCO2}
         updatePostcode={updatePostcode}
         updateRange={updateRange}
         postcode={postcode}
         dateRange={dateRange}
+        updateHomeUse={updateHomeUse}
+        homeUse={homeUse}
       />
-      <Footprint journey={journey} />
+      <Footprint journey={journey} homeUse={homeUse} />
     </div>
   );
 }
