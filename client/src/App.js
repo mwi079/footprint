@@ -10,7 +10,6 @@ import {
 import CarForms from './carForms/forms';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
-//import Distance from './distanceForms/distance';
 
 function App() {
   const [car, setCar] = useState({});
@@ -20,6 +19,10 @@ function App() {
   const [makes, setMakes] = useState(['makes']);
   const [models, setModels] = useState(['models']);
   const [options, setOptions] = useState(['options']);
+
+  const [postcode, setPostcode] = useState('');
+  const [dateRange, setdateRange] = useState({});
+  const [homeUse, setHomeUse] = useState({});
 
   useEffect(() => {
     getYears().then(({ data }) => {
@@ -130,10 +133,34 @@ function App() {
     });
   };
 
-  const intensity = (from, to, postcode) => {
-    getIntensity(from, to, postcode).then(({ data }) => {
-      console.log(data);
+  const updatePostcode = (postcode) => {
+    setPostcode(postcode);
+  };
+
+  const updateRange = (date, option) => {
+    console.log('date', date);
+    console.log('option', option);
+    if (option === 'from') {
+      setdateRange({ from: date, to: dateRange.to });
+    } else setdateRange({ from: dateRange.from, to: date });
+  };
+
+  const intensity = () => {
+    let sum = 0;
+    let entries = 0;
+    let average = 0;
+    getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
+      entries = data.data.data.length;
+      data.data.data.map((entry) => (sum += entry.intensity.forecast));
+      average = sum / entries;
     });
+    setHomeUse({ intensity: average, usage: homeUse.usage, CO2: '' });
+  };
+
+  const homeUsage = () => {};
+
+  const homeCO2 = () => {
+    //todo
   };
 
   return (
@@ -152,7 +179,13 @@ function App() {
         car={car}
         journeyCO2={journeyCO2}
       />
-      <Home intensity={intensity} />
+      <Home
+        intensity={intensity}
+        updatePostcode={updatePostcode}
+        updateRange={updateRange}
+        postcode={postcode}
+        dateRange={dateRange}
+      />
       <Footprint journey={journey} />
     </div>
   );
