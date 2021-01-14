@@ -33,10 +33,24 @@ export default function Home({
   return (
     <div>
       <center className="homeContainer">
-        <h3>Select range</h3>
+        <h3>How much Electricity did you use?</h3>
+        <TextField
+          variant="outlined"
+          type="number"
+          label="Home Energy"
+          className="homeForms"
+          InputProps={{
+            endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
+          }}
+          onChange={(event) => {
+            updateHomeUse(event.target.value);
+          }}
+        />
+        <h3>Over what period?</h3>
         <form className="homeForm" onSubmit={handleSubmit} noValidate>
           <TextField
-            id="from"
+            variant="outlined"
+            id="time"
             label="From"
             type="datetime-local"
             className="homeForms"
@@ -47,8 +61,10 @@ export default function Home({
               updateRange(event.target.value, event.target.id)
             }
           />
+          <p></p>
           <TextField
-            id="to"
+            variant="outlined"
+            id="time"
             label="To"
             type="datetime-local"
             className="homeForms"
@@ -60,7 +76,7 @@ export default function Home({
             }
           />
           <p></p>
-          <h3>Enter Postcode</h3>
+          <h3>What is your postcode?</h3>
           <TextField
             variant="outlined"
             label="Postcode"
@@ -70,19 +86,7 @@ export default function Home({
               updatePostcode(toOutcode(event.target.value));
             }}
           />
-          <h3>Enter Home Energy Consumption over that period</h3>
-          <TextField
-            variant="outlined"
-            type="number"
-            label="Home Energy"
-            className="homeForms"
-            InputProps={{
-              endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
-            }}
-            onChange={(event) => {
-              updateHomeUse(event.target.value);
-            }}
-          />
+
           <p></p>
           <Button
             className="homeForms"

@@ -15,3 +15,8 @@
   background-color: aliceblue;
   margin: 10px;
 }
+
+#time {
+  width: 200;
+  padding: 20px;
+}

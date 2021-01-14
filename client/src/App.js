@@ -14,7 +14,7 @@ import Home from './houseForms/home';
 
 function App() {
   const [car, setCar] = useState({});
-  const [journey, setJourney] = useState({});
+  const [journey, setJourney] = useState({ CO2: 0 });
 
   const [years, setYears] = useState(['years']);
   const [makes, setMakes] = useState(['makes']);
@@ -23,7 +23,7 @@ function App() {
 
   const [postcode, setPostcode] = useState('');
   const [dateRange, setdateRange] = useState({});
-  const [homeUse, setHomeUse] = useState({});
+  const [homeUse, setHomeUse] = useState({ CO2: 0 });
 
   useEffect(() => {
     getYears().then(({ data }) => {
@@ -113,7 +113,7 @@ function App() {
   };
 
   const journeyDistance = (distance) => {
-    setJourney({ distance, CO2: '' });
+    setJourney({ distance, CO2: 0 });
   };
 
   const journeyCO2 = () => {
@@ -145,7 +145,7 @@ function App() {
   };
 
   const updateHomeUse = (energy) => {
-    setHomeUse({ intensity: homeUse.intensity, energy, CO2: '' });
+    setHomeUse({ intensity: homeUse.intensity, energy, CO2: 0 });
   };
 
   const homeCO2 = () => {
@@ -182,6 +182,9 @@ function App() {
 
   return (
     <div className="overallContainer">
+      <center>
+        <h1>What's my footprint?</h1>
+      </center>
       <CarForms
         years={years}
         makes={makes}
