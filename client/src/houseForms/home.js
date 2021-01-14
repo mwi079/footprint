@@ -1,5 +1,6 @@
 import { TextField, Button } from '@material-ui/core';
 import { toOutcode } from 'postcode';
+import moment from 'moment';
 
 export default function Home({
   updatePostcode,
@@ -19,6 +20,10 @@ export default function Home({
       dateRange.from >= dateRange.to
     )
       return alert('Valid date range required');
+    let to = moment(dateRange.to);
+    let from = moment(dateRange.from);
+    if (moment.duration(to.diff(from)).asDays() > 14)
+      return alert('Maximum allowable range is 14 days');
     if (homeUse.energy === undefined)
       return alert('Home energy consumption required');
     homeCO2();

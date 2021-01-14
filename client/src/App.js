@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+//import moment from 'moment';
 import {
   getMakes,
   getYears,
@@ -151,14 +152,31 @@ function App() {
     let sum = 0;
     let entries = 0;
     let intensity = 0;
+
+    // let from = moment(dateRange.from);
+    // let to = moment(dateRange.to);
+    // let range = moment.duration(to.diff(from)).asDays();
+    // let maxRange = moment.duration(14, 'days').asDays();
+    // console.log(maxRange);
+    // console.log(range);
+
+    // if (range > maxRange) {
+    //   let end = to;
+    //   to = from.clone().add(13, 'days');
+    // }
+
+    // from = from.toISOString();
+    // to = to.toISOString();
+
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
-      entries = data.data.data.length;
+      entries += data.data.data.length;
       data.data.data.map((entry) => {
         //console.log(entry);
         return (sum += entry.intensity.forecast);
       });
       intensity = sum / entries;
       let CO2 = (+homeUse.energy * +intensity) / 1000;
+      //! if time left <0 to below.
       setHomeUse({ intensity, energy: homeUse.energy, CO2 });
     });
   };
