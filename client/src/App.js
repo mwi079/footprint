@@ -5,9 +5,11 @@ import {
   getModels,
   getOptions,
   getGPM,
+  getIntensity,
 } from './ApiService';
 import CarForms from './carForms/forms';
 import Footprint from './footprint/footprint';
+import Home from './houseForms/home';
 //import Distance from './distanceForms/distance';
 
 function App() {
@@ -128,6 +130,12 @@ function App() {
     });
   };
 
+  const intensity = (from, to, postcode) => {
+    getIntensity(from, to, postcode).then(({ data }) => {
+      console.log(data);
+    });
+  };
+
   return (
     <div className="overallContainer">
       <CarForms
@@ -144,6 +152,7 @@ function App() {
         car={car}
         journeyCO2={journeyCO2}
       />
+      <Home intensity={intensity} />
       <Footprint journey={journey} />
     </div>
   );

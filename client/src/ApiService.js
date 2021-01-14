@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 const base_carUrl = 'https://www.fueleconomy.gov/ws/rest/vehicle/';
+const base_elecUrl = 'https://api.carbonintensity.org.uk/regional/intensity/';
 
 export function getYears() {
   return get(base_carUrl + 'menu/year');
@@ -22,6 +23,10 @@ export function getOptions(model, { year, make }) {
 
 export function getGPM(id) {
   return get(`${base_carUrl}${id}`);
+}
+
+export function getIntensity(from, to, postcode) {
+  return get(`${base_elecUrl}${from}/${to}/postcode/${postcode}`);
 }
 
 function get(url) {
