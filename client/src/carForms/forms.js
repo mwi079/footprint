@@ -1,4 +1,4 @@
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, InputAdornment } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import './forms.css';
 
@@ -28,7 +28,7 @@ export default function forms({
   return (
     <div>
       <center className="carContainer">
-        <h2>Enter the details of your car</h2>
+        <h3>Enter the details of your car</h3>
         <Autocomplete
           className="carForms"
           onChange={(_, year) => makesOfYear(year)}
@@ -68,17 +68,22 @@ export default function forms({
             <TextField {...params} label="Options" variant="outlined" />
           )}
         />
-      </center>
-      <center className="distanceContainer">
-        <h2>Enter the length of your journey</h2>
+        <h3>Enter the length of your journey</h3>
         <form onSubmit={handleSubmit}>
           <TextField
             type="number"
             className="carForms"
             variant="outlined"
+            label="Journey"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">Miles</InputAdornment>
+              ),
+            }}
             onChange={(event) => journeyDistance(event.target.value)}
             value={journey.distance}
           />
+          <p></p>
           <Button
             className="carForms"
             variant="contained"

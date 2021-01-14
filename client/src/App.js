@@ -176,7 +176,6 @@ function App() {
       });
       intensity = sum / entries;
       let CO2 = (+homeUse.energy * +intensity) / 1000;
-      //! if time left <0 to below.
       setHomeUse({ intensity, energy: homeUse.energy, CO2 });
     });
   };

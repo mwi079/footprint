@@ -1,6 +1,7 @@
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, InputAdornment } from '@material-ui/core';
 import { toOutcode } from 'postcode';
 import moment from 'moment';
+import './home.css';
 
 export default function Home({
   updatePostcode,
@@ -31,15 +32,14 @@ export default function Home({
 
   return (
     <div>
-      <center>
-        <h2>Select range</h2>
+      <center className="homeContainer">
+        <h3>Select range</h3>
         <form className="homeForm" onSubmit={handleSubmit} noValidate>
           <TextField
             id="from"
             label="From"
             type="datetime-local"
-            defaultValue="null"
-            className="rangeFrom"
+            className="homeForms"
             InputLabelProps={{
               shrink: true,
             }}
@@ -51,8 +51,7 @@ export default function Home({
             id="to"
             label="To"
             type="datetime-local"
-            defaultValue="null"
-            className="rangeTo"
+            className="homeForms"
             InputLabelProps={{
               shrink: true,
             }}
@@ -61,27 +60,32 @@ export default function Home({
             }
           />
           <p></p>
-          <h2>Enter Postcode</h2>
+          <h3>Enter Postcode</h3>
           <TextField
             variant="outlined"
-            label="postcode"
+            label="Postcode"
+            className="homeForms"
             placeholder="format: AB10 6RG"
             onChange={(event) => {
               updatePostcode(toOutcode(event.target.value));
             }}
           />
-          <h2>Enter Home Energy Consumption over that period</h2>
+          <h3>Enter Home Energy Consumption over that period</h3>
           <TextField
             variant="outlined"
             type="number"
             label="Home Energy"
-            placeholder="in kWh"
+            className="homeForms"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
+            }}
             onChange={(event) => {
               updateHomeUse(event.target.value);
             }}
           />
+          <p></p>
           <Button
-            className="carForms"
+            className="homeForms"
             variant="contained"
             color="primary"
             type="submit"
