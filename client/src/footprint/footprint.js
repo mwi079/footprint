@@ -1,18 +1,44 @@
 import './footprint.css';
 import { Doughnut } from 'react-chartjs-2';
+import { FullscreenExit } from '@material-ui/icons';
 
-export default function footprint({ journey, homeUse }) {
+export default function footprint({ journey, homeUse, genMix }) {
   const carCO2 = (Math.round(journey.CO2 * 100) / 100).toFixed(2);
   const homeCO2 = (Math.round(homeUse.CO2 * 100) / 100).toFixed(2);
   const total = (Math.round((journey.CO2 + homeUse.CO2) * 100) / 100).toFixed(
     2
   );
 
-  const test = {
-    labels: ['January', 'February', 'March', 'April', 'May'],
+  const mix = {
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Your electricity mix',
+        fontSize: 20,
+      },
+      tooltips: {
+        callbacks: {
+          afterLabel: function (data) {
+            return `${data.value}%`;
+          },
+        },
+      },
+    },
+    labels: [
+      'biomass',
+      'coal',
+      'imports',
+      'gas',
+      'nuclear',
+      'other',
+      'hydro',
+      'solar',
+      'wind',
+    ],
     datasets: [
       {
-        label: 'Rainfall',
+        label: 'Split',
         backgroundColor: [
           '#B21F00',
           '#C9DE00',
@@ -27,7 +53,38 @@ export default function footprint({ journey, homeUse }) {
           '#003350',
           '#35014F',
         ],
-        data: [65, 59, 80, 81, 56],
+        data: genMix,
+      },
+    ],
+  };
+
+  // console.log(genMix);
+  // console.log(genMix.reduce((a, b) => a + b, 0));
+  // console.log(carCO2 > 0 && homeCO2 > 0);
+
+  const split = {
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Your split',
+        fontSize: 20,
+      },
+      tooltips: {
+        callbacks: {
+          afterLabel: function (data) {
+            return `${data.value}kg`;
+          },
+        },
+      },
+    },
+    labels: ['Car', 'Home'],
+    datasets: [
+      {
+        label: 'Split',
+        backgroundColor: ['#B21F00', '#C9DE00'],
+        hoverBackgroundColor: ['#501800', '#4B5000'],
+        data: [carCO2, homeCO2],
       },
     ],
   };
@@ -37,21 +94,13 @@ export default function footprint({ journey, homeUse }) {
       <h2>Results</h2>
       <div className="results">
         <h3>{carCO2} kg of CO2 on journey</h3>
+        {carCO2 > 0 && homeCO2 > 0 ? null : (
+          <Doughnut data={mix} options={mix.options} />
+        )}
         <h3>{homeCO2} kg of CO2 from your home</h3>
-        <Doughnut
-          data={test}
-          options={{
-            title: {
-              display: true,
-              text: 'Average Rainfall per month',
-              fontSize: 20,
-            },
-            legend: {
-              display: true,
-              position: 'right',
-            },
-          }}
-        ></Doughnut>
+        {genMix.reduce((a, b) => a + b, 0) === 0 ? null : (
+          <Doughnut data={split} options={split.options} />
+        )}
         <h3>{total} kg of CO2 in total</h3>
       </div>
     </center>

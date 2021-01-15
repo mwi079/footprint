@@ -28,6 +28,9 @@ function App() {
   const [postcode, setPostcode] = useState('');
   const [dateRange, setdateRange] = useState({});
   const [homeUse, setHomeUse] = useState({ gas: 0, CO2: 0 });
+  const [genMix, setGenMix] = useState([]);
+
+  const generationMix = Array(9).fill(0);
 
   useEffect(() => {
     getYears().then(({ data }) => {
@@ -198,18 +201,25 @@ function App() {
     let sum = 0;
     let entries = 0;
     let intensity = 0;
+
     const gasCO2 = 0.185; //kg per kWh- varies with efficiency of boiler
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
       entries += data.data.data.length;
       data.data.data.map((entry) => {
-        //console.log(entry);
+        entry.generationmix.map((subEntry, i) => {
+          return (generationMix[i] += subEntry.perc);
+        });
         return (sum += entry.intensity.forecast);
       });
       intensity = sum / entries;
-      console.log(homeUse);
+      generationMix.map((entry, i) => {
+        return (generationMix[i] =
+          (Math.round(entry / entries) * 100) / 100).toFixed(2); //(Math.round(journey.CO2 * 100) / 100).toFixed(2);
+      });
       let CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2) / 1000;
       setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
+      setGenMix(generationMix);
     });
   };
 
@@ -263,7 +273,7 @@ function App() {
         />
       ) : null}
       {journey.CO2 || homeUse.CO2 ? (
-        <Footprint journey={journey} homeUse={homeUse} />
+        <Footprint journey={journey} homeUse={homeUse} genMix={genMix} />
       ) : null}
     </div>
   );
