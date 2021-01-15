@@ -16,14 +16,5 @@
   "bugs": {
     "url": "https://github.com/mwi079/footprint/issues"
   },
-  "homepage": "https://github.com/mwi079/footprint#readme",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "moment": "^2.29.1",
-    "postcode": "^5.0.0"
-  },
-  "devDependencies": {
-    "@material-ui/core": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57"
-  }
+  "homepage": "https://github.com/mwi079/footprint#readme"
 }

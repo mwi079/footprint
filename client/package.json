@@ -9,7 +9,11 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "@material-ui/icons": "^4.11.2",
+    "axios": "^0.21.1",
+    "moment": "^2.29.1",
+    "postcode": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,5 +38,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57"
   }
 }

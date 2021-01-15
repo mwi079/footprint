@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-//import moment from 'moment';
+import { DriveEtaSharp, HomeSharp } from '@material-ui/icons';
 import {
   getMakes,
   getYears,
@@ -13,6 +13,9 @@ import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
 
 function App() {
+  const [carView, setCarView] = useState(false);
+  const [homeView, setHomeView] = useState(false);
+
   const [car, setCar] = useState({});
   const [journey, setJourney] = useState({ CO2: 0 });
   const [distanceUnits, setDistanceUnits] = useState('Miles');
@@ -31,6 +34,10 @@ function App() {
       setYears(data.menuItem.map((item) => item.value));
     });
   }, []);
+
+  const toggleViewCar = () => {
+    setCarView(!carView);
+  };
 
   const makesOfYear = (year) => {
     setMakes(['makes']);
@@ -117,12 +124,11 @@ function App() {
     }
   };
 
-  function changeDistanceUnits(event) {
+  const changeDistanceUnits = (event) => {
     event.preventDefault();
     setDistanceUnits(event.target.value);
     setJourney({ distance: journey.distance, CO2: 0 });
-    console.log(event);
-  }
+  };
 
   const journeyDistance = (distance) => {
     setJourney({ distance, CO2: 0 });
@@ -152,6 +158,10 @@ function App() {
         });
       }
     });
+  };
+
+  const toggleViewHome = () => {
+    setHomeView(!homeView);
   };
 
   const updatePostcode = (postcode) => {
@@ -208,33 +218,53 @@ function App() {
       <center>
         <h1>What's my footprint?</h1>
       </center>
-      <CarForms
-        years={years}
-        makes={makes}
-        models={models}
-        options={options}
-        makesOfYear={makesOfYear}
-        modelsOfMakes={modelsOfMakes}
-        optionsOfModels={optionsOfModels}
-        getCarID={getCarID}
-        journeyDistance={journeyDistance}
-        journey={journey}
-        car={car}
-        journeyCO2={journeyCO2}
-        changeDistanceUnits={changeDistanceUnits}
-        distanceUnits={distanceUnits}
-      />
-      <Home
-        homeCO2={homeCO2}
-        updatePostcode={updatePostcode}
-        updateRange={updateRange}
-        postcode={postcode}
-        dateRange={dateRange}
-        updateElecUse={updateElecUse}
-        updateGasUse={updateGasUse}
-        homeUse={homeUse}
-      />
-      <Footprint journey={journey} homeUse={homeUse} />
+      <center>
+        <DriveEtaSharp
+          color="primary"
+          style={{ fontSize: 100 }}
+          onClick={toggleViewCar}
+        />
+      </center>
+      {carView ? (
+        <CarForms
+          years={years}
+          makes={makes}
+          models={models}
+          options={options}
+          makesOfYear={makesOfYear}
+          modelsOfMakes={modelsOfMakes}
+          optionsOfModels={optionsOfModels}
+          getCarID={getCarID}
+          journeyDistance={journeyDistance}
+          journey={journey}
+          car={car}
+          journeyCO2={journeyCO2}
+          changeDistanceUnits={changeDistanceUnits}
+          distanceUnits={distanceUnits}
+        />
+      ) : null}
+      <center>
+        <HomeSharp
+          color="primary"
+          style={{ fontSize: 100 }}
+          onClick={toggleViewHome}
+        />
+      </center>
+      {homeView ? (
+        <Home
+          homeCO2={homeCO2}
+          updatePostcode={updatePostcode}
+          updateRange={updateRange}
+          postcode={postcode}
+          dateRange={dateRange}
+          updateElecUse={updateElecUse}
+          updateGasUse={updateGasUse}
+          homeUse={homeUse}
+        />
+      ) : null}
+      {journey.CO2 || homeUse.CO2 ? (
+        <Footprint journey={journey} homeUse={homeUse} />
+      ) : null}
     </div>
   );
 }
