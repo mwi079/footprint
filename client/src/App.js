@@ -231,7 +231,8 @@ function App() {
       <center>
         <DriveEtaSharp
           color="primary"
-          style={{ fontSize: 100 }}
+          className="button"
+          style={{ fontSize: 200 }}
           onClick={toggleViewCar}
         />
       </center>
@@ -255,8 +256,9 @@ function App() {
       ) : null}
       <center>
         <HomeSharp
+          className="button"
           color="primary"
-          style={{ fontSize: 100 }}
+          style={{ fontSize: 200 }}
           onClick={toggleViewHome}
         />
       </center>

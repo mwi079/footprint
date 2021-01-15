@@ -1,6 +1,5 @@
 import './footprint.css';
 import { Doughnut } from 'react-chartjs-2';
-import { FullscreenExit } from '@material-ui/icons';
 
 export default function footprint({ journey, homeUse, genMix }) {
   const carCO2 = (Math.round(journey.CO2 * 100) / 100).toFixed(2);

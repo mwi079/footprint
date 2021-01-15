@@ -1,4 +1,5 @@
 import { TextField, Button, InputAdornment } from '@material-ui/core';
+import { CloseSharp } from '@material-ui/icons';
 import { toOutcode } from 'postcode';
 import moment from 'moment';
 import './home.css';
@@ -35,6 +36,14 @@ export default function Home({
     <div>
       <center className="homeContainer">
         <form className="homeForm" onSubmit={handleSubmit}>
+          <CloseSharp
+            className="close"
+            style={{
+              position: 'absolute',
+              left: '75%',
+              //top: '-20%',
+            }}
+          />
           <h3>How much Electricity did you use?</h3>
           <TextField
             variant="outlined"

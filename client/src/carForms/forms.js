@@ -6,6 +6,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import { CloseSharp } from '@material-ui/icons';
 import './forms.css';
 
 export default function forms({
@@ -36,6 +37,7 @@ export default function forms({
   return (
     <div>
       <center className="carContainer">
+        <CloseSharp className="close" />
         <h3>Enter the details of your car</h3>
         <Autocomplete
           className="carForms"
