@@ -43,7 +43,11 @@ export default function Home({
             className="homeForms"
             min="0"
             InputProps={{
-              endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
+              endAdornment: (
+                <InputAdornment position="end" select>
+                  kWh
+                </InputAdornment>
+              ),
               inputProps: { min: 0 },
             }}
             onChange={(event) => {
@@ -114,7 +118,7 @@ export default function Home({
             color="primary"
             type="submit"
           >
-            Sumbit
+            Calculate
           </Button>
         </form>
       </center>

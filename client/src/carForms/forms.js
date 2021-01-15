@@ -1,4 +1,10 @@
-import { TextField, Button, InputAdornment } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  InputAdornment,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import './forms.css';
 
@@ -15,6 +21,8 @@ export default function forms({
   journey,
   journeyCO2,
   car,
+  distanceUnits,
+  changeDistanceUnits,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -78,7 +86,21 @@ export default function forms({
             min="0"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">Miles</InputAdornment>
+                <InputAdornment position="end">
+                  {
+                    <Select
+                      value={distanceUnits}
+                      onChange={changeDistanceUnits}
+                    >
+                      <MenuItem key="Miles" value="Miles">
+                        Miles
+                      </MenuItem>
+                      <MenuItem key="km" value="km">
+                        km
+                      </MenuItem>
+                    </Select>
+                  }
+                </InputAdornment>
               ),
               inputProps: { min: 0 },
             }}
@@ -92,7 +114,7 @@ export default function forms({
             color="primary"
             type="submit"
           >
-            Sumbit
+            Calculate
           </Button>
         </form>
       </center>

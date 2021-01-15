@@ -15,6 +15,7 @@ import Home from './houseForms/home';
 function App() {
   const [car, setCar] = useState({});
   const [journey, setJourney] = useState({ CO2: 0 });
+  const [distanceUnits, setDistanceUnits] = useState('Miles');
 
   const [years, setYears] = useState(['years']);
   const [makes, setMakes] = useState(['makes']);
@@ -43,6 +44,7 @@ function App() {
       id: '',
       gpm: '',
     });
+    setJourney({ distance: journey.distance, CO2: 0 });
 
     if (year !== null) {
       getMakes(year).then(({ data }) => {
@@ -62,6 +64,7 @@ function App() {
       id: '',
       gpm: '',
     });
+    setJourney({ distance: journey.distance, CO2: 0 });
 
     if (make !== null) {
       getModels(make, car).then(({ data }) => {
@@ -80,6 +83,7 @@ function App() {
       id: '',
       gpm: '',
     });
+    setJourney({ distance: journey.distance, CO2: 0 });
     if (model !== null) {
       getOptions(model, car).then(({ data }) => {
         if (data.menuItem.length) setOptions(data.menuItem.map((item) => item));
@@ -109,8 +113,16 @@ function App() {
         id: '',
         gpm: '',
       });
+      setJourney({ distance: journey.distance, CO2: 0 });
     }
   };
+
+  function changeDistanceUnits(event) {
+    event.preventDefault();
+    setDistanceUnits(event.target.value);
+    setJourney({ distance: journey.distance, CO2: 0 });
+    console.log(event);
+  }
 
   const journeyDistance = (distance) => {
     setJourney({ distance, CO2: 0 });
@@ -118,7 +130,6 @@ function App() {
 
   const journeyCO2 = () => {
     getGPM(car.id).then(({ data }) => {
-      console.log(data.co2TailpipeGpm);
       setCar({
         year: car.year,
         make: car.make,
@@ -127,10 +138,19 @@ function App() {
         id: car.id,
         gpm: data.co2TailpipeGpm,
       });
-      setJourney({
-        distance: journey.distance,
-        CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
-      });
+      console.log(distanceUnits);
+      if (distanceUnits === 'km') {
+        console.log('km');
+        setJourney({
+          distance: journey.distance,
+          CO2: (+journey.distance * +data.co2TailpipeGpm) / 1.60934 / 1000,
+        });
+      } else {
+        setJourney({
+          distance: journey.distance,
+          CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
+        });
+      }
     });
   };
 
@@ -201,6 +221,8 @@ function App() {
         journey={journey}
         car={car}
         journeyCO2={journeyCO2}
+        changeDistanceUnits={changeDistanceUnits}
+        distanceUnits={distanceUnits}
       />
       <Home
         homeCO2={homeCO2}
