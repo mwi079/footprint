@@ -9,7 +9,8 @@ export default function Home({
   postcode,
   dateRange,
   homeCO2,
-  updateHomeUse,
+  updateElecUse,
+  updateGasUse,
   homeUse,
 }) {
   function handleSubmit(event) {
@@ -25,32 +26,51 @@ export default function Home({
     let from = moment(dateRange.from);
     if (moment.duration(to.diff(from)).asDays() > 14)
       return alert('Maximum allowable range is 14 days');
-    if (homeUse.energy === undefined)
-      return alert('Home energy consumption required');
+    if (homeUse.elec === undefined)
+      return alert('Home elec consumption required');
     homeCO2();
   }
 
   return (
     <div>
       <center className="homeContainer">
-        <h3>How much Electricity did you use?</h3>
-        <TextField
-          variant="outlined"
-          type="number"
-          label="Home Energy"
-          className="homeForms"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
-          }}
-          onChange={(event) => {
-            updateHomeUse(event.target.value);
-          }}
-        />
-        <h3>Over what period?</h3>
-        <form className="homeForm" onSubmit={handleSubmit} noValidate>
+        <form className="homeForm" onSubmit={handleSubmit}>
+          <h3>How much Electricity did you use?</h3>
           <TextField
             variant="outlined"
-            id="time"
+            type="number"
+            label="Home Electricity"
+            className="homeForms"
+            min="0"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
+              inputProps: { min: 0 },
+            }}
+            onChange={(event) => {
+              updateElecUse(event.target.value);
+            }}
+          />
+
+          <h3>How much Gas did you use?</h3>
+          <TextField
+            variant="outlined"
+            type="number"
+            label="Home Gas"
+            className="homeForms"
+            min="0"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
+              inputProps: { min: 0 },
+            }}
+            onChange={(event) => {
+              updateGasUse(event.target.value);
+            }}
+          />
+          <h3>Over what period?</h3>
+
+          <TextField
+            variant="outlined"
+            id="from"
             label="From"
             type="datetime-local"
             className="homeForms"
@@ -64,7 +84,7 @@ export default function Home({
           <p></p>
           <TextField
             variant="outlined"
-            id="time"
+            id="to"
             label="To"
             type="datetime-local"
             className="homeForms"

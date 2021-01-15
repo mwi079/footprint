@@ -16,7 +16,8 @@
   margin: 10px;
 }
 
-#time {
+#from,
+to {
   width: 200;
   padding: 20px;
 }

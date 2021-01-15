@@ -23,7 +23,7 @@ function App() {
 
   const [postcode, setPostcode] = useState('');
   const [dateRange, setdateRange] = useState({});
-  const [homeUse, setHomeUse] = useState({ CO2: 0 });
+  const [homeUse, setHomeUse] = useState({ gas: 0, CO2: 0 });
 
   useEffect(() => {
     getYears().then(({ data }) => {
@@ -144,29 +144,31 @@ function App() {
     } else setdateRange({ from: dateRange.from, to: date });
   };
 
-  const updateHomeUse = (energy) => {
-    setHomeUse({ intensity: homeUse.intensity, energy, CO2: 0 });
+  const updateElecUse = (elec) => {
+    setHomeUse({
+      intensity: homeUse.intensity,
+      elec,
+      gas: homeUse.gas,
+      CO2: 0,
+    });
+  };
+
+  const updateGasUse = (gas) => {
+    if (gas) {
+      setHomeUse({
+        intensity: homeUse.intensity,
+        elec: homeUse.elec,
+        gas,
+        CO2: 0,
+      });
+    }
   };
 
   const homeCO2 = () => {
     let sum = 0;
     let entries = 0;
     let intensity = 0;
-
-    // let from = moment(dateRange.from);
-    // let to = moment(dateRange.to);
-    // let range = moment.duration(to.diff(from)).asDays();
-    // let maxRange = moment.duration(14, 'days').asDays();
-    // console.log(maxRange);
-    // console.log(range);
-
-    // if (range > maxRange) {
-    //   let end = to;
-    //   to = from.clone().add(13, 'days');
-    // }
-
-    // from = from.toISOString();
-    // to = to.toISOString();
+    const gasCO2 = 0.185; //kg per kWh- varies with efficiency of boiler
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
       entries += data.data.data.length;
@@ -175,8 +177,9 @@ function App() {
         return (sum += entry.intensity.forecast);
       });
       intensity = sum / entries;
-      let CO2 = (+homeUse.energy * +intensity) / 1000;
-      setHomeUse({ intensity, energy: homeUse.energy, CO2 });
+      console.log(homeUse);
+      let CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2) / 1000;
+      setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
     });
   };
 
@@ -205,7 +208,8 @@ function App() {
         updateRange={updateRange}
         postcode={postcode}
         dateRange={dateRange}
-        updateHomeUse={updateHomeUse}
+        updateElecUse={updateElecUse}
+        updateGasUse={updateGasUse}
         homeUse={homeUse}
       />
       <Footprint journey={journey} homeUse={homeUse} />
@@ -214,3 +218,19 @@ function App() {
 }
 
 export default App;
+
+//! multiple API calls for range >2 weeks
+// let from = moment(dateRange.from);
+// let to = moment(dateRange.to);
+// let range = moment.duration(to.diff(from)).asDays();
+// let maxRange = moment.duration(14, 'days').asDays();
+// console.log(maxRange);
+// console.log(range);
+
+// if (range > maxRange) {
+//   let end = to;
+//   to = from.clone().add(13, 'days');
+// }
+
+// from = from.toISOString();
+// to = to.toISOString();

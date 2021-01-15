@@ -75,10 +75,12 @@ export default function forms({
             className="carForms"
             variant="outlined"
             label="Journey"
+            min="0"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">Miles</InputAdornment>
               ),
+              inputProps: { min: 0 },
             }}
             onChange={(event) => journeyDistance(event.target.value)}
             value={journey.distance}
