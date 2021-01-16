@@ -39,18 +39,18 @@ export default function footprint({ journey, homeUse, genMix }) {
       {
         label: 'Split',
         backgroundColor: [
-          '#B21F00',
-          '#C9DE00',
-          '#2FDE00',
-          '#00A6B4',
-          '#6800B4',
+          'rgb(255, 99, 132,0.75)',
+          'rgb(255, 159, 64,0.75)',
+          'rgb(255, 205, 86,0.75)',
+          'rgb(75, 192, 192,0.75)',
+          'rgb(54, 162, 235,0.75)',
         ],
         hoverBackgroundColor: [
-          '#501800',
-          '#4B5000',
-          '#175000',
-          '#003350',
-          '#35014F',
+          'rgb(255, 99, 132,1.5)',
+          'rgb(255, 159, 64,1.5)',
+          'rgb(255, 205, 86,1.5)',
+          'rgb(75, 192, 192,1.5)',
+          'rgb(54, 162, 235,1.5)',
         ],
         data: genMix,
       },
@@ -87,8 +87,6 @@ export default function footprint({ journey, homeUse, genMix }) {
       },
     ],
   };
-  //! FIX ENERGY UNITS
-  //! EXIT AND REFRESH BUTTONS
   return (
     <center className="resultsContainer">
       <h2>Results</h2>
