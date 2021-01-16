@@ -186,8 +186,8 @@ function App() {
 
   const refreshHome = () => {
     setPostcode('');
-    updateGasUse('');
-    updateElecUse('');
+    updateGasUse('0');
+    updateElecUse('0');
     //TODO
   };
 
@@ -208,7 +208,6 @@ function App() {
   };
 
   const updateElecUse = (elec) => {
-    console.log(elec);
     setHomeUse({
       intensity: homeUse.intensity,
       elec,
