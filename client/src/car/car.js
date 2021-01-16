@@ -23,7 +23,7 @@ export default function Car({
   journeyCO2,
   car,
   distanceUnits,
-  changeDistanceUnits,
+  toggleDistanceUnits,
   toggleViewCar,
   refreshCar,
 }) {
@@ -40,7 +40,7 @@ export default function Car({
     <div>
       <center className="carContainer">
         <CloseSharp
-          className="close"
+          className="button"
           style={{
             position: 'relative',
             left: '50%',
@@ -48,7 +48,7 @@ export default function Car({
           onClick={toggleViewCar}
         />
         <RefreshSharp
-          className="refresh"
+          className="button"
           style={{
             position: 'relative',
             right: '50%',
@@ -59,7 +59,6 @@ export default function Car({
         <p></p>
         <DriveEtaSharp
           color="primary"
-          className="button"
           style={{ fontSize: 60, position: 'relative', right: 0 }}
         />
         <h3>Enter the details of your car</h3>
@@ -116,7 +115,7 @@ export default function Car({
                   {
                     <Select
                       value={distanceUnits}
-                      onChange={changeDistanceUnits}
+                      onChange={toggleDistanceUnits}
                     >
                       <MenuItem key="Miles" value="Miles">
                         Miles

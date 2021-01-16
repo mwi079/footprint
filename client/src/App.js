@@ -28,7 +28,7 @@ function App() {
 
   const [postcode, setPostcode] = useState('');
   const [dateRange, setdateRange] = useState({});
-  const [homeUse, setHomeUse] = useState({ CO2: 0 });
+  const [homeUse, setHomeUse] = useState({ gas: 0, CO2: 0 });
   const [genMix, setGenMix] = useState([]);
   const [gasUnits, setGasUnits] = useState('kWh');
   const [elecUnits, setElecUnits] = useState('kWh');
@@ -144,7 +144,7 @@ function App() {
     }
   };
 
-  const changeDistanceUnits = (event) => {
+  const toggleDistanceUnits = (event) => {
     event.preventDefault();
     setDistanceUnits(event.target.value);
     setJourney({ distance: journey.distance, CO2: 0 });
@@ -200,6 +200,7 @@ function App() {
 
   const changeElecUnits = (event) => {
     event.preventDefault();
+    setElecUnits(event.target.value);
     //TODO
   };
 
@@ -214,6 +215,7 @@ function App() {
 
   const changeGasUnits = (event) => {
     event.preventDefault();
+    setGasUnits(event.target.value);
     //TODO
   };
 
@@ -232,11 +234,13 @@ function App() {
     let sum = 0;
     let entries = 0;
     let intensity = 0;
-
-    const gasCO2 = 0.185; //kg per kWh- varies with efficiency of boiler
+    const gasCO2kw = 0.185; //kg per kWh- varies with efficiency of boiler
+    const kWhtoft3 = 31.7; // 31.7kW per 100 cubic ft
+    const kWhtom3 = 11.2; // 11.2 kWh per cubic meter
+    const kWhtoMJ = 3.6; // 3.6 MJ  per kWh
+    let CO2;
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
-      console.log(data);
       entries += data.data.data.length;
       data.data.data.map((entry) => {
         entry.generationmix.map((subEntry, i) => {
@@ -249,7 +253,35 @@ function App() {
         return (generationMix[i] =
           (Math.round(entry / entries) * 100) / 100).toFixed(2); //(Math.round(journey.CO2 * 100) / 100).toFixed(2);
       });
-      let CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2) / 1000;
+      console.log('gas', gasUnits);
+      console.log('elec', elecUnits);
+
+      if (gasUnits === 'kWh' && elecUnits === 'kWh') {
+        CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2kw) / 1000;
+      } else if (gasUnits === 'kWh' && elecUnits === 'MJ') {
+        CO2 =
+          ((+homeUse.elec / kWhtoMJ) * +intensity + homeUse.gas * gasCO2kw) /
+          1000;
+      } else if (gasUnits === 'm3' && elecUnits === 'kWh') {
+        CO2 =
+          (+homeUse.elec * +intensity + homeUse.gas * kWhtom3 * gasCO2kw) /
+          1000;
+      } else if (gasUnits === 'm3' && elecUnits === 'MJ') {
+        CO2 =
+          ((+homeUse.elec / kWhtoMJ) * +intensity +
+            homeUse.gas * kWhtom3 * gasCO2kw) /
+          1000;
+      } else if (gasUnits === 'ft3' && elecUnits === 'kWh') {
+        CO2 =
+          (+homeUse.elec * +intensity + homeUse.gas * kWhtoft3 * gasCO2kw) /
+          1000;
+      } else if (gasUnits === 'ft3' && elecUnits === 'MJ') {
+        CO2 =
+          ((+homeUse.elec / kWhtoMJ) * +intensity +
+            homeUse.gas * kWhtoft3 * gasCO2kw) /
+          1000;
+      }
+      console.log(CO2);
       setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
       setGenMix(generationMix);
     });
@@ -284,7 +316,7 @@ function App() {
           journey={journey}
           car={car}
           journeyCO2={journeyCO2}
-          changeDistanceUnits={changeDistanceUnits}
+          toggleDistanceUnits={toggleDistanceUnits}
           distanceUnits={distanceUnits}
           toggleViewCar={toggleViewCar}
           refreshCar={refreshCar}

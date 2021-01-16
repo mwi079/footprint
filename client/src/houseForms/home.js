@@ -28,8 +28,6 @@ export default function Home({
 }) {
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(postcode);
-    console.log(isValid(postcode));
     if (!isValid(postcode)) return alert('Valid UK postcode required');
     if (
       dateRange.from === undefined ||
@@ -51,7 +49,7 @@ export default function Home({
       <center className="homeContainer">
         <form className="homeForm" onSubmit={handleSubmit}>
           <CloseSharp
-            className="close"
+            className="button"
             style={{
               position: 'relative',
               left: '50%',
@@ -60,7 +58,7 @@ export default function Home({
             onClick={toggleViewHome}
           />
           <RefreshSharp
-            className="refresh"
+            className="button"
             style={{
               position: 'relative',
               right: '50%',
@@ -71,7 +69,6 @@ export default function Home({
           <p></p>
           <HomeSharp
             color="primary"
-            className="button"
             style={{ fontSize: 60, position: 'relative', right: 0 }}
           />
           <h3>How much Electricity did you use?</h3>
@@ -90,8 +87,8 @@ export default function Home({
                       <MenuItem key="kWh" value="kWh">
                         kWh
                       </MenuItem>
-                      <MenuItem key="kJ" value="kJ">
-                        kJ
+                      <MenuItem key="MJ" value="MJ">
+                        MJ
                       </MenuItem>
                     </Select>
                   }
@@ -121,7 +118,10 @@ export default function Home({
                         kWh
                       </MenuItem>
                       <MenuItem key="m3" value="m3">
-                        m3
+                        m<sup>3</sup>
+                      </MenuItem>
+                      <MenuItem key="ft3" value="ft3">
+                        ft<sup>3</sup>
                       </MenuItem>
                     </Select>
                   }
