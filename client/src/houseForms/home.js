@@ -28,6 +28,7 @@ export default function Home({
 }) {
   function handleSubmit(event) {
     event.preventDefault();
+
     if (!isValid(postcode)) return alert('Valid UK postcode required');
     if (
       dateRange.from === undefined ||
@@ -40,7 +41,11 @@ export default function Home({
     if (moment.duration(to.diff(from)).asDays() > 14)
       return alert('Maximum allowable range is 14 days');
     if (homeUse.elec === undefined)
-      return alert('Home elec consumption required');
+      return alert('Home electricity consumption required. If none set as 0');
+    if (homeUse.gas === undefined)
+      return alert('Home gas consumption required. If none set as 0');
+    if (+homeUse.gas === 0 && +homeUse.elec === 0)
+      return alert('Need either electrical or gas input to calculate');
     homeCO2();
   }
 

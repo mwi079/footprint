@@ -24,3 +24,7 @@ code {
 .button {
   cursor: pointer;
 }
+
+.button:hover {
+  filter: brightness(120%);
+}

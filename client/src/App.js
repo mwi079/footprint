@@ -28,7 +28,7 @@ function App() {
 
   const [postcode, setPostcode] = useState('');
   const [dateRange, setdateRange] = useState({});
-  const [homeUse, setHomeUse] = useState({ gas: 0, CO2: 0 });
+  const [homeUse, setHomeUse] = useState({ CO2: 0 });
   const [genMix, setGenMix] = useState([]);
   const [gasUnits, setGasUnits] = useState('kWh');
   const [elecUnits, setElecUnits] = useState('kWh');
@@ -185,6 +185,9 @@ function App() {
   };
 
   const refreshHome = () => {
+    setPostcode('');
+    updateGasUse('');
+    updateElecUse('');
     //TODO
   };
 
@@ -205,6 +208,7 @@ function App() {
   };
 
   const updateElecUse = (elec) => {
+    console.log(elec);
     setHomeUse({
       intensity: homeUse.intensity,
       elec,
@@ -220,21 +224,19 @@ function App() {
   };
 
   const updateGasUse = (gas) => {
-    if (gas) {
-      setHomeUse({
-        intensity: homeUse.intensity,
-        elec: homeUse.elec,
-        gas,
-        CO2: 0,
-      });
-    }
+    setHomeUse({
+      intensity: homeUse.intensity,
+      elec: homeUse.elec,
+      gas,
+      CO2: 0,
+    });
   };
 
   const homeCO2 = () => {
     let sum = 0;
     let entries = 0;
     let intensity = 0;
-    const gasCO2kw = 0.185; //kg per kWh- varies with efficiency of boiler
+    const gasCO2kw = 185; //g per kWh- varies with efficiency of boiler
     const kWhtoft3 = 31.7; // 31.7kW per 100 cubic ft
     const kWhtom3 = 11.2; // 11.2 kWh per cubic meter
     const kWhtoMJ = 3.6; // 3.6 MJ  per kWh
@@ -253,8 +255,6 @@ function App() {
         return (generationMix[i] =
           (Math.round(entry / entries) * 100) / 100).toFixed(2); //(Math.round(journey.CO2 * 100) / 100).toFixed(2);
       });
-      console.log('gas', gasUnits);
-      console.log('elec', elecUnits);
 
       if (gasUnits === 'kWh' && elecUnits === 'kWh') {
         CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2kw) / 1000;
@@ -281,8 +281,8 @@ function App() {
             homeUse.gas * kWhtoft3 * gasCO2kw) /
           1000;
       }
-      console.log(CO2);
       setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
+      console.log(homeUse);
       setGenMix(generationMix);
     });
   };
