@@ -18,3 +18,7 @@
 form {
   width: 100%;
 }
+
+.button {
+  position: relative;
+}

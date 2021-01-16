@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-import { CloseSharp, RefreshSharp } from '@material-ui/icons';
+import { CloseSharp, RefreshSharp, HomeSharp } from '@material-ui/icons';
 import { isValid } from 'postcode';
 import moment from 'moment';
 import './home.css';
@@ -53,20 +53,26 @@ export default function Home({
           <CloseSharp
             className="close"
             style={{
-              position: 'absolute',
-              left: '77%',
-              //top: '-20%',
+              position: 'relative',
+              left: '50%',
+              top: '0',
             }}
             onClick={toggleViewHome}
           />
           <RefreshSharp
             className="refresh"
             style={{
-              position: 'absolute',
-              left: '21%',
-              //top: '-20%',
+              position: 'relative',
+              right: '50%',
+              top: '0',
             }}
             onClick={refreshHome}
+          />
+          <p></p>
+          <HomeSharp
+            color="primary"
+            className="button"
+            style={{ fontSize: 60, position: 'relative', right: 0 }}
           />
           <h3>How much Electricity did you use?</h3>
           <TextField

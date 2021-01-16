@@ -11,6 +11,7 @@ import {
 import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
+import './index.css';
 
 function App() {
   const [carView, setCarView] = useState(false);
@@ -198,6 +199,7 @@ function App() {
   };
 
   const changeElecUnits = (event) => {
+    event.preventDefault();
     //TODO
   };
 
@@ -211,6 +213,7 @@ function App() {
   };
 
   const changeGasUnits = (event) => {
+    event.preventDefault();
     //TODO
   };
 

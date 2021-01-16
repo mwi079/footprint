@@ -6,7 +6,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { CloseSharp, RefreshSharp } from '@material-ui/icons';
+import { CloseSharp, RefreshSharp, DriveEtaSharp } from '@material-ui/icons';
 import './car.css';
 
 export default function Car({
@@ -42,20 +42,25 @@ export default function Car({
         <CloseSharp
           className="close"
           style={{
-            position: 'absolute',
-            left: '77%',
-            //top: '-20%',
+            position: 'relative',
+            left: '50%',
           }}
           onClick={toggleViewCar}
         />
         <RefreshSharp
           className="refresh"
           style={{
-            position: 'absolute',
-            left: '21%',
-            //top: '-20%',
+            position: 'relative',
+            right: '50%',
+            top: '0',
           }}
           onClick={refreshCar}
+        />
+        <p></p>
+        <DriveEtaSharp
+          color="primary"
+          className="button"
+          style={{ fontSize: 60, position: 'relative', right: 0 }}
         />
         <h3>Enter the details of your car</h3>
         <Autocomplete
