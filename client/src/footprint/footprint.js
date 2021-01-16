@@ -57,7 +57,7 @@ export default function footprint({ journey, homeUse, genMix }) {
     ],
   };
 
-  // console.log(genMix);
+  console.log(genMix);
   // console.log(genMix.reduce((a, b) => a + b, 0));
   // console.log(carCO2 > 0 && homeCO2 > 0);
 
@@ -87,20 +87,23 @@ export default function footprint({ journey, homeUse, genMix }) {
       },
     ],
   };
-
+  //! FIX ENERGY UNITS
+  //! EXIT AND REFRESH BUTTONS
   return (
     <center className="resultsContainer">
       <h2>Results</h2>
       <div className="results">
-        <h3>{carCO2} kg of CO2 on journey</h3>
-        {carCO2 > 0 && homeCO2 > 0 ? null : (
+        {+carCO2 ? <h3>{carCO2} kg of CO2 on journey</h3> : null}
+        {genMix === Array(9).fill(0) ? null : (
           <Doughnut data={mix} options={mix.options} />
         )}
-        <h3>{homeCO2} kg of CO2 from your home</h3>
-        {genMix.reduce((a, b) => a + b, 0) === 0 ? null : (
-          <Doughnut data={split} options={split.options} />
-        )}
-        <h3>{total} kg of CO2 in total</h3>
+        {+homeCO2 ? <h3>{homeCO2} kg of CO2 from your home</h3> : null}
+        {+carCO2 !== 0 && +homeCO2 !== 0 ? (
+          <>
+            <Doughnut data={split} options={split.options} />
+            <h3>{total} kg of CO2 in total</h3>
+          </>
+        ) : null}
       </div>
     </center>
   );

@@ -6,10 +6,10 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { CloseSharp } from '@material-ui/icons';
-import './forms.css';
+import { CloseSharp, RefreshSharp } from '@material-ui/icons';
+import './car.css';
 
-export default function forms({
+export default function Car({
   years,
   makes,
   models,
@@ -24,6 +24,8 @@ export default function forms({
   car,
   distanceUnits,
   changeDistanceUnits,
+  toggleViewCar,
+  refreshCar,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -37,7 +39,24 @@ export default function forms({
   return (
     <div>
       <center className="carContainer">
-        <CloseSharp className="close" />
+        <CloseSharp
+          className="close"
+          style={{
+            position: 'absolute',
+            left: '77%',
+            //top: '-20%',
+          }}
+          onClick={toggleViewCar}
+        />
+        <RefreshSharp
+          className="refresh"
+          style={{
+            position: 'absolute',
+            left: '21%',
+            //top: '-20%',
+          }}
+          onClick={refreshCar}
+        />
         <h3>Enter the details of your car</h3>
         <Autocomplete
           className="carForms"

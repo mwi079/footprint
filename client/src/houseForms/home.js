@@ -1,6 +1,12 @@
-import { TextField, Button, InputAdornment } from '@material-ui/core';
-import { CloseSharp } from '@material-ui/icons';
-import { toOutcode } from 'postcode';
+import {
+  TextField,
+  Button,
+  InputAdornment,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
+import { CloseSharp, RefreshSharp } from '@material-ui/icons';
+import { isValid } from 'postcode';
 import moment from 'moment';
 import './home.css';
 
@@ -13,10 +19,18 @@ export default function Home({
   updateElecUse,
   updateGasUse,
   homeUse,
+  toggleViewHome,
+  refreshHome,
+  elecUnits,
+  gasUnits,
+  changeElecUnits,
+  changeGasUnits,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
-    if (!postcode) return alert('Valid UK postcode required');
+    console.log(postcode);
+    console.log(isValid(postcode));
+    if (!isValid(postcode)) return alert('Valid UK postcode required');
     if (
       dateRange.from === undefined ||
       dateRange.to === undefined ||
@@ -40,9 +54,19 @@ export default function Home({
             className="close"
             style={{
               position: 'absolute',
-              left: '75%',
+              left: '77%',
               //top: '-20%',
             }}
+            onClick={toggleViewHome}
+          />
+          <RefreshSharp
+            className="refresh"
+            style={{
+              position: 'absolute',
+              left: '21%',
+              //top: '-20%',
+            }}
+            onClick={refreshHome}
           />
           <h3>How much Electricity did you use?</h3>
           <TextField
@@ -51,10 +75,20 @@ export default function Home({
             label="Home Electricity"
             className="homeForms"
             min="0"
+            value={homeUse.elec}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end" select>
-                  kWh
+                <InputAdornment position="end">
+                  {
+                    <Select value={elecUnits} onChange={changeElecUnits}>
+                      <MenuItem key="kWh" value="kWh">
+                        kWh
+                      </MenuItem>
+                      <MenuItem key="kJ" value="kJ">
+                        kJ
+                      </MenuItem>
+                    </Select>
+                  }
                 </InputAdornment>
               ),
               inputProps: { min: 0 },
@@ -71,8 +105,22 @@ export default function Home({
             label="Home Gas"
             className="homeForms"
             min="0"
+            value={homeUse.gas}
             InputProps={{
-              endAdornment: <InputAdornment position="end">kWh</InputAdornment>,
+              endAdornment: (
+                <InputAdornment position="end">
+                  {
+                    <Select value={gasUnits} onChange={changeGasUnits}>
+                      <MenuItem key="kWh" value="kWh">
+                        kWh
+                      </MenuItem>
+                      <MenuItem key="m3" value="m3">
+                        m3
+                      </MenuItem>
+                    </Select>
+                  }
+                </InputAdornment>
+              ),
               inputProps: { min: 0 },
             }}
             onChange={(event) => {
@@ -87,6 +135,7 @@ export default function Home({
             label="From"
             type="datetime-local"
             className="homeForms"
+            value={dateRange.from}
             InputLabelProps={{
               shrink: true,
             }}
@@ -101,6 +150,7 @@ export default function Home({
             label="To"
             type="datetime-local"
             className="homeForms"
+            value={dateRange.to}
             InputLabelProps={{
               shrink: true,
             }}
@@ -113,10 +163,11 @@ export default function Home({
           <TextField
             variant="outlined"
             label="Postcode"
+            value={postcode}
             className="homeForms"
             placeholder="format: AB10 6RG"
             onChange={(event) => {
-              updatePostcode(toOutcode(event.target.value));
+              updatePostcode(event.target.value);
             }}
           />
 

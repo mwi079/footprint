@@ -8,7 +8,7 @@ import {
   getGPM,
   getIntensity,
 } from './ApiService';
-import CarForms from './carForms/forms';
+import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
 
@@ -27,8 +27,10 @@ function App() {
 
   const [postcode, setPostcode] = useState('');
   const [dateRange, setdateRange] = useState({});
-  const [homeUse, setHomeUse] = useState({ gas: 0, CO2: 0 });
+  const [homeUse, setHomeUse] = useState({ CO2: 0 });
   const [genMix, setGenMix] = useState([]);
+  const [gasUnits, setGasUnits] = useState('kWh');
+  const [elecUnits, setElecUnits] = useState('kWh');
 
   const generationMix = Array(9).fill(0);
 
@@ -40,6 +42,20 @@ function App() {
 
   const toggleViewCar = () => {
     setCarView(!carView);
+  };
+
+  const refreshCar = () => {
+    setMakes(['makes']);
+    setModels(['models']);
+    setOptions(['options']);
+    setCar({
+      year: '',
+      make: '',
+      model: '',
+      option: '',
+      id: '',
+      gpm: '',
+    });
   };
 
   const makesOfYear = (year) => {
@@ -147,12 +163,12 @@ function App() {
         id: car.id,
         gpm: data.co2TailpipeGpm,
       });
-      console.log(distanceUnits);
+      const milestokm = 1.60934;
       if (distanceUnits === 'km') {
         console.log('km');
         setJourney({
           distance: journey.distance,
-          CO2: (+journey.distance * +data.co2TailpipeGpm) / 1.60934 / 1000,
+          CO2: (+journey.distance * +data.co2TailpipeGpm) / milestokm / 1000,
         });
       } else {
         setJourney({
@@ -167,6 +183,10 @@ function App() {
     setHomeView(!homeView);
   };
 
+  const refreshHome = () => {
+    //TODO
+  };
+
   const updatePostcode = (postcode) => {
     setPostcode(postcode);
   };
@@ -177,6 +197,10 @@ function App() {
     } else setdateRange({ from: dateRange.from, to: date });
   };
 
+  const changeElecUnits = (event) => {
+    //TODO
+  };
+
   const updateElecUse = (elec) => {
     setHomeUse({
       intensity: homeUse.intensity,
@@ -184,6 +208,10 @@ function App() {
       gas: homeUse.gas,
       CO2: 0,
     });
+  };
+
+  const changeGasUnits = (event) => {
+    //TODO
   };
 
   const updateGasUse = (gas) => {
@@ -205,6 +233,7 @@ function App() {
     const gasCO2 = 0.185; //kg per kWh- varies with efficiency of boiler
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
+      console.log(data);
       entries += data.data.data.length;
       data.data.data.map((entry) => {
         entry.generationmix.map((subEntry, i) => {
@@ -229,15 +258,17 @@ function App() {
         <h1>What's my footprint?</h1>
       </center>
       <center>
-        <DriveEtaSharp
-          color="primary"
-          className="button"
-          style={{ fontSize: 200 }}
-          onClick={toggleViewCar}
-        />
+        {carView ? null : (
+          <DriveEtaSharp
+            color="primary"
+            className="button"
+            style={{ fontSize: 200 }}
+            onClick={toggleViewCar}
+          />
+        )}
       </center>
       {carView ? (
-        <CarForms
+        <Car
           years={years}
           makes={makes}
           models={models}
@@ -252,15 +283,19 @@ function App() {
           journeyCO2={journeyCO2}
           changeDistanceUnits={changeDistanceUnits}
           distanceUnits={distanceUnits}
+          toggleViewCar={toggleViewCar}
+          refreshCar={refreshCar}
         />
       ) : null}
       <center>
-        <HomeSharp
-          className="button"
-          color="primary"
-          style={{ fontSize: 200 }}
-          onClick={toggleViewHome}
-        />
+        {homeView ? null : (
+          <HomeSharp
+            className="button"
+            color="primary"
+            style={{ fontSize: 200 }}
+            onClick={toggleViewHome}
+          />
+        )}
       </center>
       {homeView ? (
         <Home
@@ -272,6 +307,12 @@ function App() {
           updateElecUse={updateElecUse}
           updateGasUse={updateGasUse}
           homeUse={homeUse}
+          toggleViewHome={toggleViewHome}
+          refreshHome={refreshHome}
+          elecUnits={elecUnits}
+          gasUnits={gasUnits}
+          changeElecUnits={changeElecUnits}
+          changeGasUnits={changeGasUnits}
         />
       ) : null}
       {journey.CO2 || homeUse.CO2 ? (
