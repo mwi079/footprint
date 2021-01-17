@@ -31,6 +31,9 @@ export default function Car({
     event.preventDefault();
     if (journey.distance === undefined)
       return alert('Distance cannot be blank');
+    if (+journey.distance === 0) {
+      return alert('Cannot calculate for zero distance');
+    }
     if (car.id === '' || car.id === undefined)
       return alert('Full car details required');
     journeyCO2();

@@ -174,19 +174,39 @@ function App() {
         model: car.model,
         option: car.option,
         id: car.id,
-        gpm: data.co2TailpipeGpm,
-        em: data.cityE,
+        gpm: +data.co2TailpipeGpm,
+        em: +data.cityE,
       });
-      if (distanceUnits === 'km') {
-        setJourney({
-          distance: journey.distance,
-          CO2: (+journey.distance * +data.co2TailpipeGpm) / milestokm / 1000,
-        });
+      if (+data.co2TailpipeGpm !== 0) {
+        console.log('hello');
+        console.log(+data.co2TailpipeGpm);
+        if (distanceUnits === 'km') {
+          setJourney({
+            distance: journey.distance,
+            CO2: (+journey.distance * +data.co2TailpipeGpm) / milestokm / 1000,
+          });
+        } else {
+          setJourney({
+            distance: journey.distance,
+            CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
+          });
+        }
       } else {
-        setJourney({
-          distance: journey.distance,
-          CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
-        });
+        console.log(carCompare);
+        if (distanceUnits === 'km') {
+          setJourney({
+            distance: journey.distance,
+            CO2:
+              (+journey.distance * (data.cityE / 100) * +carCompare) /
+              milestokm /
+              1000,
+          });
+        } else {
+          setJourney({
+            distance: journey.distance,
+            CO2: (+journey.distance * (data.cityE / 100) * +carCompare) / 1000,
+          });
+        }
       }
     });
   };

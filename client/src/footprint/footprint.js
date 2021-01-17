@@ -70,7 +70,7 @@ export default function footprint({ journey, homeUse, genMix }) {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Your split',
+        text: 'Your car/home split',
         fontSize: 20,
       },
       tooltips: {
@@ -85,26 +85,23 @@ export default function footprint({ journey, homeUse, genMix }) {
     datasets: [
       {
         label: 'Split',
-        backgroundColor: ['#B21F00', '#C9DE00'],
-        hoverBackgroundColor: ['#501800', '#4B5000'],
+        backgroundColor: ['rgb(255, 99, 132,0.75)', 'rgb(255, 159, 64,0.75)'],
+        hoverBackgroundColor: [
+          'rgb(255, 99, 132,1.5)',
+          'rgb(255, 159, 64,1.5)',
+        ],
         data: [carCO2, homeCO2],
       },
     ],
   };
 
-  console.log(!homeUse.elec);
-  console.log(genMix !== Array(9).fill(0));
-
   return (
     <center className="resultsContainer">
       <h2>Results</h2>
       <div className="results">
-        {+carCO2 ? <h3>{carCO2} kg of CO2 on journey</h3> : null}
+        {+carCO2 ? <h3>{carCO2} kg of CO2 from your car</h3> : null}
         {genMix !== Array(9).fill(0) && +homeUse.elec ? (
-          <>
-            <h1>Why can we see me but not the graph?</h1>
-            <Doughnut data={mix} options={mix.options} />
-          </>
+          <Doughnut data={mix} options={mix.options} />
         ) : null}
         {+homeCO2 ? <h3>{homeCO2} kg of CO2 from your home</h3> : null}
         {+carCO2 !== 0 && +homeCO2 !== 0 ? (
