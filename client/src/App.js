@@ -21,7 +21,8 @@ function App() {
   const [car, setCar] = useState({});
   const [journey, setJourney] = useState({ CO2: 0 });
   const [distanceUnits, setDistanceUnits] = useState('Miles');
-  const [carCompare, setCarCompare] = useState('');
+  const [carCompare, setCarCompare] = useState({});
+  const [elec, setElec] = useState(false);
 
   const [years, setYears] = useState(['years']);
   const [makes, setMakes] = useState(['makes']);
@@ -36,10 +37,19 @@ function App() {
   const [elecUnits, setElecUnits] = useState('kWh');
 
   const generationMix = Array(9).fill(0);
+  const erange = 0.3; //kWh per mile
+  const milestokm = 1.60934;
 
   useEffect(() => {
     getYears().then(({ data }) => {
       setYears(data.menuItem.map((item) => item.value));
+    });
+    getCharge().then(({ data }) => {
+      setCarCompare({
+        intensity: data.data[0].intensity.forecast,
+        compare: (data.data[0].intensity.forecast * erange) / 1000,
+        CO2: 0,
+      });
     });
   }, []);
 
@@ -162,11 +172,6 @@ function App() {
   };
 
   const journeyCO2 = () => {
-    getCharge().then(({ data }) => {
-      setCarCompare(data.data[0].intensity.forecast);
-    });
-
-    const milestokm = 1.60934;
     getGPM(car.id).then(({ data }) => {
       setCar({
         year: car.year,
@@ -178,33 +183,55 @@ function App() {
         em: +data.cityE,
       });
       if (+data.co2TailpipeGpm !== 0) {
-        console.log('hello');
-        console.log(+data.co2TailpipeGpm);
+        setElec(false);
         if (distanceUnits === 'km') {
           setJourney({
             distance: journey.distance,
             CO2: (+journey.distance * +data.co2TailpipeGpm) / milestokm / 1000,
+          });
+          setCarCompare({
+            intensity: carCompare.intensity,
+            compare: carCompare.compare,
+            CO2: (carCompare.compare * journey.distance) / milestokm,
           });
         } else {
           setJourney({
             distance: journey.distance,
             CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
           });
+          setCarCompare({
+            intensity: carCompare.intensity,
+            compare: carCompare.compare,
+            CO2: carCompare.compare * journey.distance,
+          });
         }
       } else {
-        console.log(carCompare);
+        setElec(true);
         if (distanceUnits === 'km') {
           setJourney({
             distance: journey.distance,
             CO2:
-              (+journey.distance * (data.cityE / 100) * +carCompare) /
+              (+journey.distance *
+                (+data.cityE / 100 / milestokm) *
+                +carCompare.intensity) /
               milestokm /
               1000,
           });
         } else {
+          console.log('cityE', data.cityE);
+          console.log('carCompare', carCompare.intensity);
+          console.log(journey.distance);
+          console.log(
+            (+journey.distance * (+data.cityE / 100) * +carCompare.intensity) /
+              1000
+          );
           setJourney({
             distance: journey.distance,
-            CO2: (+journey.distance * (data.cityE / 100) * +carCompare) / 1000,
+            CO2:
+              (+journey.distance *
+                (+data.cityE / 100) *
+                +carCompare.intensity) /
+              1000,
           });
         }
       }
@@ -382,7 +409,13 @@ function App() {
         />
       ) : null}
       {journey.CO2 || homeUse.CO2 ? (
-        <Footprint journey={journey} homeUse={homeUse} genMix={genMix} />
+        <Footprint
+          journey={journey}
+          homeUse={homeUse}
+          genMix={genMix}
+          elec={elec}
+          carCompare={carCompare}
+        />
       ) : null}
     </div>
   );

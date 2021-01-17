@@ -1,12 +1,51 @@
 import './footprint.css';
-import { Doughnut } from 'react-chartjs-2';
+import { Doughnut, Bar } from 'react-chartjs-2';
 
-export default function footprint({ journey, homeUse, genMix }) {
+export default function footprint({
+  journey,
+  homeUse,
+  genMix,
+  elec,
+  carCompare,
+}) {
   const carCO2 = (Math.round(journey.CO2 * 100) / 100).toFixed(2);
   const homeCO2 = (Math.round(homeUse.CO2 * 100) / 100).toFixed(2);
   const total = (Math.round((journey.CO2 + homeUse.CO2) * 100) / 100).toFixed(
     2
   );
+  console.log('elec?', elec);
+  console.log(carCompare.CO2);
+  console.log(carCO2);
+
+  const compare = {
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'What if you had an electric car?',
+        fontSize: 20,
+      },
+      tooltips: {
+        callbacks: {
+          afterLabel: function (data) {
+            return `${data.value}kg`;
+          },
+        },
+      },
+    },
+    labels: ['Your car', 'An electric car'],
+    datasets: [
+      {
+        label: 'Split',
+        backgroundColor: ['rgb(255, 99, 132,0.75)', 'rgb(255, 159, 64,0.75)'],
+        hoverBackgroundColor: [
+          'rgb(255, 99, 132,1.5)',
+          'rgb(255, 159, 64,1.5)',
+        ],
+        data: [carCO2, carCompare.CO2],
+      },
+    ],
+  };
 
   const mix = {
     options: {
@@ -99,6 +138,9 @@ export default function footprint({ journey, homeUse, genMix }) {
     <center className="resultsContainer">
       <h2>Results</h2>
       <div className="results">
+        {+carCO2 && !elec ? (
+          <Bar data={compare} options={compare.options} />
+        ) : null}
         {+carCO2 ? <h3>{carCO2} kg of CO2 from your car</h3> : null}
         {genMix !== Array(9).fill(0) && +homeUse.elec ? (
           <Doughnut data={mix} options={mix.options} />
