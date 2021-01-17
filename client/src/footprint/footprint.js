@@ -13,7 +13,7 @@ export default function footprint({ journey, homeUse, genMix }) {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Your electricity mix',
+        text: 'Your electricity generation mix',
         fontSize: 20,
       },
       tooltips: {
@@ -92,17 +92,19 @@ export default function footprint({ journey, homeUse, genMix }) {
     ],
   };
 
-  console.log(homeUse.elec);
-
-  console.log(genMix !== Array(9).fill(0) && +homeUse.elec !== 0);
+  console.log(!homeUse.elec);
+  console.log(genMix !== Array(9).fill(0));
 
   return (
     <center className="resultsContainer">
       <h2>Results</h2>
       <div className="results">
         {+carCO2 ? <h3>{carCO2} kg of CO2 on journey</h3> : null}
-        {genMix !== Array(9).fill(0) && +homeUse.elec !== 0 ? (
-          <Doughnut data={mix} options={mix.options} />
+        {genMix !== Array(9).fill(0) && +homeUse.elec ? (
+          <>
+            <h1>Why can we see me but not the graph?</h1>
+            <Doughnut data={mix} options={mix.options} />
+          </>
         ) : null}
         {+homeCO2 ? <h3>{homeCO2} kg of CO2 from your home</h3> : null}
         {+carCO2 !== 0 && +homeCO2 !== 0 ? (

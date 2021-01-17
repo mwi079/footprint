@@ -2,6 +2,7 @@ import { toOutcode } from 'postcode';
 const axios = require('axios');
 const base_carUrl = 'https://www.fueleconomy.gov/ws/rest/vehicle/';
 const base_elecUrl = 'https://api.carbonintensity.org.uk/regional/intensity/';
+const charge_Url = 'https://api.carbonintensity.org.uk/intensity';
 
 export function getYears() {
   return get(base_carUrl + 'menu/year');
@@ -26,8 +27,11 @@ export function getGPM(id) {
 }
 
 export function getIntensity(from, to, postcode) {
-  //console.log(`${base_elecUrl}${from}/${to}/postcode/${toOutcode(postcode)}`);
   return get(`${base_elecUrl}${from}/${to}/postcode/${toOutcode(postcode)}`);
+}
+
+export function getCharge() {
+  return get(charge_Url);
 }
 
 function get(url) {

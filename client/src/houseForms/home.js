@@ -40,6 +40,7 @@ export default function Home({
     let from = moment(dateRange.from);
     if (moment.duration(to.diff(from)).asDays() > 14)
       return alert('Maximum allowable range is 14 days');
+    if (to > moment(Date.now())) return alert('Date cannot be in the future');
     if (homeUse.elec === undefined)
       return alert('Home electricity consumption required. If none set as 0');
     if (homeUse.gas === undefined)

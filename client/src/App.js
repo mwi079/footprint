@@ -7,6 +7,7 @@ import {
   getOptions,
   getGPM,
   getIntensity,
+  getCharge,
 } from './ApiService';
 import Car from './car/car';
 import Footprint from './footprint/footprint';
@@ -20,6 +21,7 @@ function App() {
   const [car, setCar] = useState({});
   const [journey, setJourney] = useState({ CO2: 0 });
   const [distanceUnits, setDistanceUnits] = useState('Miles');
+  const [carCompare, setCarCompare] = useState('');
 
   const [years, setYears] = useState(['years']);
   const [makes, setMakes] = useState(['makes']);
@@ -56,6 +58,7 @@ function App() {
       option: '',
       id: '',
       gpm: '',
+      em: '',
     });
   };
 
@@ -70,6 +73,7 @@ function App() {
       option: '',
       id: '',
       gpm: '',
+      em: '',
     });
     setJourney({ distance: journey.distance, CO2: 0 });
 
@@ -90,6 +94,7 @@ function App() {
       option: '',
       id: '',
       gpm: '',
+      em: '',
     });
     setJourney({ distance: journey.distance, CO2: 0 });
 
@@ -109,6 +114,7 @@ function App() {
       option: '',
       id: '',
       gpm: '',
+      em: '',
     });
     setJourney({ distance: journey.distance, CO2: 0 });
     if (model !== null) {
@@ -130,6 +136,7 @@ function App() {
         option: option.text,
         id: option.value,
         gpm: '',
+        em: '',
       });
     } else {
       setCar({
@@ -155,6 +162,11 @@ function App() {
   };
 
   const journeyCO2 = () => {
+    getCharge().then(({ data }) => {
+      setCarCompare(data.data[0].intensity.forecast);
+    });
+
+    const milestokm = 1.60934;
     getGPM(car.id).then(({ data }) => {
       setCar({
         year: car.year,
@@ -163,10 +175,9 @@ function App() {
         option: car.option,
         id: car.id,
         gpm: data.co2TailpipeGpm,
+        em: data.cityE,
       });
-      const milestokm = 1.60934;
       if (distanceUnits === 'km') {
-        console.log('km');
         setJourney({
           distance: journey.distance,
           CO2: (+journey.distance * +data.co2TailpipeGpm) / milestokm / 1000,
@@ -179,7 +190,6 @@ function App() {
       }
     });
   };
-
   const toggleViewHome = () => {
     setHomeView(!homeView);
   };
@@ -242,8 +252,10 @@ function App() {
     let CO2;
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
+      console.log(data);
       entries += data.data.data.length;
       data.data.data.map((entry) => {
+        console.log(entry);
         entry.generationmix.map((subEntry, i) => {
           return (generationMix[i] += subEntry.perc);
         });
@@ -254,7 +266,7 @@ function App() {
         return (generationMix[i] =
           (Math.round(entry / entries) * 100) / 100).toFixed(2); //(Math.round(journey.CO2 * 100) / 100).toFixed(2);
       });
-
+      console.log(sum);
       if (gasUnits === 'kWh' && elecUnits === 'kWh') {
         CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2kw) / 1000;
       } else if (gasUnits === 'kWh' && elecUnits === 'MJ') {
