@@ -22,8 +22,20 @@ export default function Trend({
 
   const trend = {
     datasets: [
-      { label: 'CO2', yAxisID: 'CO2', data: dataCO2 },
-      { label: 'Temperature', yAxisID: 'Temperature', data: dataTemp },
+      {
+        label: 'CO2',
+        yAxisID: 'CO2',
+        data: dataCO2,
+        backgroundColor: 'rgb(54, 162, 235,0.75)',
+        hoverBackgroundColor: 'rgb(54, 162, 235,1.5)',
+      },
+      {
+        label: 'Temperature',
+        yAxisID: 'Temperature',
+        data: dataTemp,
+        backgroundColor: 'rgb(255, 205, 86,0.75)',
+        hoverBackgroundColor: 'rgb(255, 205, 86,1.5)',
+      },
     ],
     options: {
       scales: {

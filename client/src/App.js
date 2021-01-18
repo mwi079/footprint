@@ -23,6 +23,7 @@ import './index.css';
 function App() {
   const [carView, setCarView] = useState(false);
   const [homeView, setHomeView] = useState(false);
+  const [resultsView, setResultView] = useState(false);
   const [worldView, setWorldView] = useState(false);
 
   const [car, setCar] = useState({});
@@ -385,6 +386,10 @@ function App() {
     });
   };
 
+  const toggleResultsView = () => {
+    setResultView(!resultsView);
+  };
+
   const toggleWorldView = () => {
     setWorldView(!worldView);
   };
@@ -453,19 +458,27 @@ function App() {
         />
       ) : null}
       <center className>
-        <p></p>
-        <Foot className="button" id="foot" />
-        <p></p>
+        {resultsView ? null : (
+          <>
+            <p></p>
+            <Foot className="button" id="foot" onClick={toggleResultsView} />
+            <p></p>
+          </>
+        )}
       </center>
-      {journey.CO2 || homeUse.CO2 ? (
+      {resultsView ? (
         <Footprint
           journey={journey}
           homeUse={homeUse}
           genMix={genMix}
           elec={elec}
           carCompare={carCompare}
+          toggleResultsView={toggleResultsView}
         />
       ) : null}
+      <center>
+        <h1>Why does it matter?</h1>
+      </center>
       <center>
         {worldView ? null : (
           <PublicSharp

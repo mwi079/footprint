@@ -1,5 +1,6 @@
 import './footprint.css';
 import { Doughnut, Bar } from 'react-chartjs-2';
+import { CloseSharp } from '@material-ui/icons';
 
 export default function footprint({
   journey,
@@ -7,6 +8,7 @@ export default function footprint({
   genMix,
   elec,
   carCompare,
+  toggleResultsView,
 }) {
   const carCO2 = (Math.round(journey.CO2 * 100) / 100).toFixed(2);
   const homeCO2 = (Math.round(homeUse.CO2 * 100) / 100).toFixed(2);
@@ -131,23 +133,37 @@ export default function footprint({
 
   return (
     <center className="resultsContainer">
-      <h2>Results</h2>
-      <div className="results">
-        {+carCO2 && !elec ? (
-          <Bar data={compare} options={compare.options} />
-        ) : null}
-        {+carCO2 ? <h3>{carCO2} kg of CO2 from your car</h3> : null}
-        {genMix !== Array(9).fill(0) && +homeUse.elec ? (
-          <Doughnut data={mix} options={mix.options} />
-        ) : null}
-        {+homeCO2 ? <h3>{homeCO2} kg of CO2 from your home</h3> : null}
-        {+carCO2 !== 0 && +homeCO2 !== 0 ? (
-          <>
-            <Doughnut data={split} options={split.options} />
-            <h3>{total} kg of CO2 in total</h3>
-          </>
-        ) : null}
-      </div>
+      <CloseSharp
+        className="button"
+        style={{
+          position: 'relative',
+          left: '50%',
+          top: 0,
+        }}
+        onClick={toggleResultsView}
+      />
+
+      {+carCO2 || +homeCO2 ? (
+        <div className="results">
+          <h2>Results</h2>
+          {+carCO2 && !elec ? (
+            <Bar data={compare} options={compare.options} />
+          ) : null}
+          {+carCO2 ? <h3>{carCO2} kg of CO2 from your car</h3> : null}
+          {genMix !== Array(9).fill(0) && +homeUse.elec ? (
+            <Doughnut data={mix} options={mix.options} />
+          ) : null}
+          {+homeCO2 ? <h3>{homeCO2} kg of CO2 from your home</h3> : null}
+          {+carCO2 !== 0 && +homeCO2 !== 0 ? (
+            <>
+              <Doughnut data={split} options={split.options} />
+              <h3>{total} kg of CO2 in total</h3>
+            </>
+          ) : null}
+        </div>
+      ) : (
+        <h2> Complete the Car and/or Home forms to see your footprint </h2>
+      )}
     </center>
   );
 }
