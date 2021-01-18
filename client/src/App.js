@@ -12,6 +12,7 @@ import {
 import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
+import moment from 'moment';
 import './index.css';
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   const [homeView, setHomeView] = useState(false);
 
   const [car, setCar] = useState({});
-  const [journey, setJourney] = useState({ CO2: 0 });
+  const [journey, setJourney] = useState({ distance: 0, CO2: 0 });
   const [distanceUnits, setDistanceUnits] = useState('Miles');
   const [carCompare, setCarCompare] = useState({});
   const [elec, setElec] = useState(false);
@@ -30,8 +31,11 @@ function App() {
   const [options, setOptions] = useState(['options']);
 
   const [postcode, setPostcode] = useState('');
-  const [dateRange, setdateRange] = useState({});
-  const [homeUse, setHomeUse] = useState({ CO2: 0 });
+  const [dateRange, setdateRange] = useState({
+    from: moment().subtract(1, 'd').format('YYYY-MM-DDTHH:MM'),
+    to: moment().format('YYYY-MM-DDTHH:MM'),
+  });
+  const [homeUse, setHomeUse] = useState({ elec: 0, gas: 0, CO2: 0 });
   const [genMix, setGenMix] = useState([]);
   const [gasUnits, setGasUnits] = useState('kWh');
   const [elecUnits, setElecUnits] = useState('kWh');
@@ -70,6 +74,7 @@ function App() {
       gpm: '',
       em: '',
     });
+    setJourney({ distance: 0, CO2: 0 });
   };
 
   const makesOfYear = (year) => {
@@ -243,9 +248,11 @@ function App() {
 
   const refreshHome = () => {
     setPostcode('');
-    updateGasUse('0');
-    updateElecUse('0');
-    //TODO
+    setHomeUse({ elec: 0, gas: 0, CO2: 0 });
+    setdateRange({
+      from: moment().subtract(1, 'd').format('YYYY-MM-DDTHH:MM'),
+      to: moment().format('YYYY-MM-DDTHH:MM'),
+    });
   };
 
   const updatePostcode = (postcode) => {
@@ -299,10 +306,8 @@ function App() {
     let CO2;
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
-      console.log(data);
       entries += data.data.data.length;
       data.data.data.map((entry) => {
-        console.log(entry);
         entry.generationmix.map((subEntry, i) => {
           return (generationMix[i] += subEntry.perc);
         });
@@ -313,7 +318,7 @@ function App() {
         return (generationMix[i] =
           (Math.round(entry / entries) * 100) / 100).toFixed(2); //(Math.round(journey.CO2 * 100) / 100).toFixed(2);
       });
-      console.log(sum);
+
       if (gasUnits === 'kWh' && elecUnits === 'kWh') {
         CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2kw) / 1000;
       } else if (gasUnits === 'kWh' && elecUnits === 'MJ') {
@@ -340,7 +345,7 @@ function App() {
           1000;
       }
       setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
-      console.log(homeUse);
+
       setGenMix(generationMix);
     });
   };

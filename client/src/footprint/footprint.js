@@ -13,9 +13,7 @@ export default function footprint({
   const total = (Math.round((journey.CO2 + homeUse.CO2) * 100) / 100).toFixed(
     2
   );
-  console.log('elec?', elec);
-  console.log(carCompare.CO2);
-  console.log(carCO2);
+  const compareCO2 = (Math.round(carCompare.CO2 * 100) / 100).toFixed(2);
 
   const compare = {
     options: {
@@ -27,8 +25,8 @@ export default function footprint({
       },
       tooltips: {
         callbacks: {
-          afterLabel: function (data) {
-            return `${data.value}kg`;
+          afterLabel: function () {
+            return `kg`;
           },
         },
       },
@@ -36,13 +34,12 @@ export default function footprint({
     labels: ['Your car', 'An electric car'],
     datasets: [
       {
-        label: 'Split',
         backgroundColor: ['rgb(255, 99, 132,0.75)', 'rgb(255, 159, 64,0.75)'],
         hoverBackgroundColor: [
           'rgb(255, 99, 132,1.5)',
           'rgb(255, 159, 64,1.5)',
         ],
-        data: [carCO2, carCompare.CO2],
+        data: [carCO2, compareCO2],
       },
     ],
   };
@@ -76,7 +73,6 @@ export default function footprint({
     ],
     datasets: [
       {
-        label: 'Split',
         backgroundColor: [
           'rgb(255, 99, 132,0.75)',
           'rgb(255, 159, 64,0.75)',
@@ -123,7 +119,6 @@ export default function footprint({
     labels: ['Car', 'Home'],
     datasets: [
       {
-        label: 'Split',
         backgroundColor: ['rgb(255, 99, 132,0.75)', 'rgb(255, 159, 64,0.75)'],
         hoverBackgroundColor: [
           'rgb(255, 99, 132,1.5)',
@@ -153,6 +148,11 @@ export default function footprint({
           </>
         ) : null}
       </div>
+      <div id="co2-widget-container"></div>
+      <script
+        type="text/javascript"
+        src="https://www.climatelevels.org/graphs/js/co2.php?theme=dark-unica&pid=2degreesinstitute"
+      ></script>
     </center>
   );
 }
