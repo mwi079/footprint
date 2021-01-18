@@ -1,16 +1,17 @@
-.results {
+.graph {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 100%;
   border-radius: 5px;
   margin: 10px;
 }
 
-.resultsContainer {
+.worldContainer {
   background: #eee;
   padding: 10px;
-  width: 60%;
+  width: 100%;
   margin: 100px auto;
   border-radius: 5px;
   box-shadow: 0 0 10px 1px #3336;
+  align-content: center;
 }

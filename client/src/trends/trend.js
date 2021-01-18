@@ -1,10 +1,13 @@
 import { Line } from 'react-chartjs-2';
+import './trend.css';
+import { CloseSharp, PublicSharp } from '@material-ui/icons';
 
 export default function Trend({
   CO2Trend,
   CO2timeTrend,
   tempTrend,
   tempTimeTrend,
+  toggleWorldView,
 }) {
   const dataCO2 = [];
   const dataTemp = [];
@@ -17,11 +20,10 @@ export default function Trend({
     dataTemp.push({ x: tempTimeTrend[i], y: tempTrend[i] });
   }
 
-  //console.log(data);
   const trend = {
     datasets: [
-      { label: 'CO2', yAxesID: 'CO2', data: dataCO2 },
-      { label: 'Temperature', yAxesID: 'Temperature', data: dataTemp },
+      { label: 'CO2', yAxisID: 'CO2', data: dataCO2 },
+      { label: 'Temperature', yAxisID: 'Temperature', data: dataTemp },
     ],
     options: {
       scales: {
@@ -32,6 +34,8 @@ export default function Trend({
             id: 'CO2',
             type: 'linear',
             position: 'left',
+            setmin: 385,
+            suggestedMax: 415,
           },
           {
             label: 'Temparature',
@@ -43,10 +47,28 @@ export default function Trend({
       },
     },
   };
-  //console.log(CO2Trend);
-  //console.log(timeTrend);
-  //console.log(tempTrend);
-  console.log(dataTemp);
-  console.log(dataCO2);
-  return <Line data={trend} options={trend.options} />;
+
+  return (
+    <div>
+      <center className="worldContainer">
+        <CloseSharp
+          className="button"
+          style={{
+            position: 'relative',
+            left: '50%',
+            top: 0,
+          }}
+          onClick={toggleWorldView}
+        />
+
+        <PublicSharp
+          color="primary"
+          style={{ fontSize: 60, position: 'relative', right: 0, top: 10 }}
+        />
+        <div className="graph">
+          <Line data={trend} options={trend.options}></Line>
+        </div>
+      </center>
+    </div>
+  );
 }

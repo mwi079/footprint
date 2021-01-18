@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { DriveEtaSharp, HomeSharp } from '@material-ui/icons';
+import { DriveEtaSharp, HomeSharp, PublicSharp } from '@material-ui/icons';
+import { SvgIcon } from '@material-ui/core';
 import {
   getMakes,
   getYears,
@@ -15,12 +16,14 @@ import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
 import Trend from './trends/trend';
+import { ReactComponent as Foot } from './footprint.svg';
 import moment from 'moment';
 import './index.css';
 
 function App() {
   const [carView, setCarView] = useState(false);
   const [homeView, setHomeView] = useState(false);
+  const [worldView, setWorldView] = useState(false);
 
   const [car, setCar] = useState({});
   const [journey, setJourney] = useState({ distance: 0, CO2: 0 });
@@ -382,6 +385,10 @@ function App() {
     });
   };
 
+  const toggleWorldView = () => {
+    setWorldView(!worldView);
+  };
+
   return (
     <div className="overallContainer">
       <center>
@@ -445,6 +452,11 @@ function App() {
           changeGasUnits={changeGasUnits}
         />
       ) : null}
+      <center className>
+        <p></p>
+        <Foot className="button" id="foot" />
+        <p></p>
+      </center>
       {journey.CO2 || homeUse.CO2 ? (
         <Footprint
           journey={journey}
@@ -454,30 +466,27 @@ function App() {
           carCompare={carCompare}
         />
       ) : null}
-      <Trend
-        CO2Trend={CO2Trend}
-        CO2timeTrend={CO2timeTrend}
-        tempTrend={tempTrend}
-        tempTimeTrend={tempTimeTrend}
-      />
+      <center>
+        {worldView ? null : (
+          <PublicSharp
+            className="button"
+            color="primary"
+            style={{ fontSize: 200 }}
+            onClick={toggleWorldView}
+          />
+        )}
+      </center>
+      {worldView ? (
+        <Trend
+          CO2Trend={CO2Trend}
+          CO2timeTrend={CO2timeTrend}
+          tempTrend={tempTrend}
+          tempTimeTrend={tempTimeTrend}
+          toggleWorldView={toggleWorldView}
+        />
+      ) : null}
     </div>
   );
 }
 
 export default App;
-
-//! multiple API calls for range >2 weeks
-// let from = moment(dateRange.from);
-// let to = moment(dateRange.to);
-// let range = moment.duration(to.diff(from)).asDays();
-// let maxRange = moment.duration(14, 'days').asDays();
-// console.log(maxRange);
-// console.log(range);
-
-// if (range > maxRange) {
-//   let end = to;
-//   to = from.clone().add(13, 'days');
-// }
-
-// from = from.toISOString();
-// to = to.toISOString();

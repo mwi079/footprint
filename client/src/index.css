@@ -28,3 +28,7 @@ code {
 .button:hover {
   filter: brightness(120%);
 }
+
+#foot g {
+  fill: #3f51b5;
+}
