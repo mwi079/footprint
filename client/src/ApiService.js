@@ -3,6 +3,8 @@ const axios = require('axios');
 const base_carUrl = 'https://www.fueleconomy.gov/ws/rest/vehicle/';
 const base_elecUrl = 'https://api.carbonintensity.org.uk/regional/intensity/';
 const charge_Url = 'https://api.carbonintensity.org.uk/intensity';
+const CO2_Url = 'https://global-warming.org/api/co2-api';
+const temp_Url = 'https://global-warming.org/api/temperature-api';
 
 export function getYears() {
   return get(base_carUrl + 'menu/year');
@@ -32,6 +34,14 @@ export function getIntensity(from, to, postcode) {
 
 export function getCharge() {
   return get(charge_Url);
+}
+
+export function getCO2Trend() {
+  return get(CO2_Url);
+}
+
+export function getTempTrend() {
+  return get(temp_Url);
 }
 
 function get(url) {

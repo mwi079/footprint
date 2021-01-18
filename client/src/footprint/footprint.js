@@ -148,11 +148,6 @@ export default function footprint({
           </>
         ) : null}
       </div>
-      <div id="co2-widget-container"></div>
-      <script
-        type="text/javascript"
-        src="https://www.climatelevels.org/graphs/js/co2.php?theme=dark-unica&pid=2degreesinstitute"
-      ></script>
     </center>
   );
 }

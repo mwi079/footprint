@@ -8,10 +8,13 @@ import {
   getGPM,
   getIntensity,
   getCharge,
+  getCO2Trend,
+  getTempTrend,
 } from './ApiService';
 import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
+import Trend from './trends/trend';
 import moment from 'moment';
 import './index.css';
 
@@ -40,6 +43,11 @@ function App() {
   const [gasUnits, setGasUnits] = useState('kWh');
   const [elecUnits, setElecUnits] = useState('kWh');
 
+  const [CO2Trend, setCO2Trend] = useState([]);
+  const [CO2timeTrend, setCO2TimeTrend] = useState([]);
+  const [tempTrend, setTempTrend] = useState([]);
+  const [tempTimeTrend, setTempTimeTrend] = useState([]);
+
   const generationMix = Array(9).fill(0);
   const erange = 0.3; //kWh per mile
   const milestokm = 1.60934;
@@ -53,6 +61,32 @@ function App() {
         intensity: data.data[0].intensity.forecast,
         compare: (data.data[0].intensity.forecast * erange) / 1000,
         CO2: 0,
+      });
+    });
+    getCO2Trend().then(({ data }) => {
+      data.co2.map((entry, i) => {
+        if (i % 30 === 0) {
+          let time = `${entry.year}-${entry.month}-${entry.day}`;
+          time = moment(time).format('YYYY-MM');
+          setCO2TimeTrend((timeTrend) => [...timeTrend, time]);
+          return setCO2Trend((CO2Trend) => [...CO2Trend, entry.trend]);
+        } else return null;
+      });
+    });
+    getTempTrend().then(({ data }) => {
+      data.result.map((entry) => {
+        if (+entry.time > 2011) {
+          let month = Math.round(365 * (entry.time.slice(5, 7) / 100 / 30));
+          if (month === 0) {
+            month = 1;
+          }
+          let year = entry.time.slice(0, 4);
+          console.log(month);
+          let time = `${year}-${month}`;
+          time = moment(time).format('YYYY-MM');
+          setTempTimeTrend((tempTimeTrend) => [...tempTimeTrend, time]);
+          return setTempTrend((tempTrend) => [...tempTrend, +entry.station]);
+        } else return null;
       });
     });
   }, []);
@@ -268,7 +302,6 @@ function App() {
   const changeElecUnits = (event) => {
     event.preventDefault();
     setElecUnits(event.target.value);
-    //TODO
   };
 
   const updateElecUse = (elec) => {
@@ -283,7 +316,6 @@ function App() {
   const changeGasUnits = (event) => {
     event.preventDefault();
     setGasUnits(event.target.value);
-    //TODO
   };
 
   const updateGasUse = (gas) => {
@@ -422,6 +454,12 @@ function App() {
           carCompare={carCompare}
         />
       ) : null}
+      <Trend
+        CO2Trend={CO2Trend}
+        CO2timeTrend={CO2timeTrend}
+        tempTrend={tempTrend}
+        tempTimeTrend={tempTimeTrend}
+      />
     </div>
   );
 }
