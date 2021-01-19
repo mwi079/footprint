@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DriveEtaSharp, HomeSharp, PublicSharp } from '@material-ui/icons';
-import { SvgIcon } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import {
   getMakes,
   getYears,
@@ -401,12 +401,15 @@ function App() {
       </center>
       <center>
         {carView ? null : (
-          <DriveEtaSharp
-            color="primary"
-            className="button"
-            style={{ fontSize: 200 }}
-            onClick={toggleViewCar}
-          />
+          <Tooltip title="My Car" placement="right-start">
+            <DriveEtaSharp
+              className="button"
+              color="primary"
+              style={{ fontSize: 200 }}
+              onClick={toggleViewCar}
+              title="My Car"
+            />
+          </Tooltip>
         )}
       </center>
       {carView ? (
@@ -431,12 +434,14 @@ function App() {
       ) : null}
       <center>
         {homeView ? null : (
-          <HomeSharp
-            className="button"
-            color="primary"
-            style={{ fontSize: 200 }}
-            onClick={toggleViewHome}
-          />
+          <Tooltip title="My Home" placement="right-start">
+            <HomeSharp
+              className="button"
+              color="primary"
+              style={{ fontSize: 200 }}
+              onClick={toggleViewHome}
+            />
+          </Tooltip>
         )}
       </center>
       {homeView ? (
@@ -461,7 +466,9 @@ function App() {
         {resultsView ? null : (
           <>
             <p></p>
-            <Foot className="button" id="foot" onClick={toggleResultsView} />
+            <Tooltip title="My Footprint" placement="right-start">
+              <Foot className="button" id="foot" onClick={toggleResultsView} />
+            </Tooltip>
             <p></p>
           </>
         )}
@@ -481,12 +488,14 @@ function App() {
       </center>
       <center>
         {worldView ? null : (
-          <PublicSharp
-            className="button"
-            color="primary"
-            style={{ fontSize: 200 }}
-            onClick={toggleWorldView}
-          />
+          <Tooltip title="Our Home" placement="right-start">
+            <PublicSharp
+              className="button"
+              color="primary"
+              style={{ fontSize: 200 }}
+              onClick={toggleWorldView}
+            />
+          </Tooltip>
         )}
       </center>
       {worldView ? (
