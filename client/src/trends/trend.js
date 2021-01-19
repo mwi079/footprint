@@ -12,7 +12,6 @@ export default function Trend({
   const dataCO2 = [];
   const dataTemp = [];
   const degrees = 'o'.sup();
-  console.log(degrees);
 
   for (let i = 0; i < CO2Trend.length; i++) {
     dataCO2.push({ x: CO2timeTrend[i], y: CO2Trend[i] });

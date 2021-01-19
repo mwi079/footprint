@@ -30,6 +30,7 @@ const initialState = {
   tempTimeTrend: [],
 };
 function reducer(state, action) {
+  console.log('non error', action);
   switch (action.type) {
     case 'carView':
       return {
@@ -39,7 +40,7 @@ function reducer(state, action) {
     case 'homeView':
       return {
         ...state,
-        howeView: action.payload,
+        homeView: action.payload,
       };
     case 'resultsView':
       return {
@@ -104,7 +105,7 @@ function reducer(state, action) {
     case 'dateRange':
       return {
         ...state,
-        dateRande: action.payload,
+        dateRange: action.payload,
       };
     case 'homeUse':
       return {
@@ -147,6 +148,7 @@ function reducer(state, action) {
         tempTimeTrend: action.payload,
       };
     default:
+      console.log(action); //! REMOVE BEFORE FINAL SUMBIT
       throw new Error();
   }
 }

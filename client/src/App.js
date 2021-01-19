@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-//import { Store } from './reducer';
+import React, { useEffect } from 'react';
+import { Store } from './reducer';
 import { DriveEtaSharp, HomeSharp, PublicSharp } from '@material-ui/icons';
 import { Tooltip } from '@material-ui/core';
 import {
@@ -23,89 +23,78 @@ import moment from 'moment';
 import './index.css';
 
 function App() {
-  // const [state, dispatch] = Store();
-  // const {
-  //   carView,
-  //   homeView,
-  //   resultsView,
-  //   worldView,
-  //   car,
-  //   journey,
-  //   distanceUnits,
-  //   carCompare,
-  //   elec,
-  //   years,
-  //   makes,
-  //   models,
-  //   options,
-  //   postcode,
-  //   dateRange,
-  //   homeUse,
-  //   genMix,
-  //   gasUnits,
-  //   elecUnits,
-  //   CO2Trend,
-  //   CO2timeTrend,
-  //   tempTrend,
-  //   tempTimeTrend,
-  // }=state
-
-  const [carView, setCarView] = useState(false);
-  const [homeView, setHomeView] = useState(false);
-  const [resultsView, setResultView] = useState(false);
-  const [worldView, setWorldView] = useState(false);
-
-  const [car, setCar] = useState({});
-  const [journey, setJourney] = useState({ distance: 0, CO2: 0 });
-  const [distanceUnits, setDistanceUnits] = useState('Miles');
-  const [carCompare, setCarCompare] = useState({});
-  const [elec, setElec] = useState(false);
-
-  const [years, setYears] = useState(['years']);
-  const [makes, setMakes] = useState(['makes']);
-  const [models, setModels] = useState(['models']);
-  const [options, setOptions] = useState(['options']);
-
-  const [postcode, setPostcode] = useState('');
-  const [dateRange, setdateRange] = useState({
-    from: moment().subtract(1, 'd').format('YYYY-MM-DDTHH:MM'),
-    to: moment().format('YYYY-MM-DDTHH:MM'),
-  });
-  const [homeUse, setHomeUse] = useState({ elec: 0, gas: 0, CO2: 0 });
-  const [genMix, setGenMix] = useState([]);
-  const [gasUnits, setGasUnits] = useState('kWh');
-  const [elecUnits, setElecUnits] = useState('kWh');
-
-  const [CO2Trend, setCO2Trend] = useState([]);
-  const [CO2timeTrend, setCO2TimeTrend] = useState([]);
-  const [tempTrend, setTempTrend] = useState([]);
-  const [tempTimeTrend, setTempTimeTrend] = useState([]);
+  const [state, dispatch] = Store();
+  const {
+    carView,
+    homeView,
+    resultsView,
+    worldView,
+    car,
+    journey,
+    distanceUnits,
+    carCompare,
+    elec,
+    years,
+    makes,
+    models,
+    options,
+    postcode,
+    dateRange,
+    homeUse,
+    genMix,
+    gasUnits,
+    elecUnits,
+    CO2Trend,
+    CO2timeTrend,
+    tempTrend,
+    tempTimeTrend,
+  } = state;
 
   const generationMix = Array(9).fill(0);
   const erange = 0.3; //kWh per mile
 
   useEffect(() => {
     getYears().then(({ data }) => {
-      setYears(data.menuItem.map((item) => item.value));
+      let array = [];
+      data.menuItem.map((item) => array.push(item.value));
+      dispatch({ type: 'years', payload: array });
     });
+
     getCharge().then(({ data }) => {
-      setCarCompare({
-        intensity: data.data[0].intensity.forecast,
-        compare: (data.data[0].intensity.forecast * erange) / 1000,
-        CO2: 0,
+      dispatch({
+        type: 'carCompare',
+        payload: {
+          intensity: data.data[0].intensity.forecast,
+          compare: (data.data[0].intensity.forecast * erange) / 1000,
+          CO2: 0,
+        },
       });
     });
     getCO2Trend().then(({ data }) => {
+      let array = [];
+      let arrayt = [];
       data.co2.map((entry, i) => {
         if (i % 30 === 0) {
           let time = `${entry.year}-${entry.month}-${entry.day}`;
           time = moment(time).format('YYYY-MM');
-          setCO2TimeTrend((timeTrend) => [...timeTrend, time]);
-          return setCO2Trend((CO2Trend) => [...CO2Trend, entry.trend]);
-        } else return null;
+          arrayt.push(time);
+          array.push(entry.trend);
+          return true;
+        }
+        return false;
+      });
+      dispatch({
+        type: 'CO2Trend',
+        payload: array,
+      });
+      dispatch({
+        type: 'CO2timeTrend',
+        payload: arrayt,
       });
     });
     getTempTrend().then(({ data }) => {
+      let array = [];
+      let arrayt = [];
       data.result.map((entry) => {
         if (+entry.time > 2011) {
           let month = Math.round(365 * (entry.time.slice(5, 7) / 100 / 30));
@@ -115,208 +104,289 @@ function App() {
           let year = entry.time.slice(0, 4);
           let time = `${year}-${month}`;
           time = moment(time).format('YYYY-MM');
-          setTempTimeTrend((tempTimeTrend) => [...tempTimeTrend, time]);
-          return setTempTrend((tempTrend) => [...tempTrend, +entry.station]);
-        } else return null;
+          arrayt.push(time);
+          array.push(entry.station);
+
+          return true;
+        } else return false;
+      });
+      dispatch({
+        type: 'tempTrend',
+        payload: array,
+      });
+      dispatch({
+        type: 'tempTimeTrend',
+        payload: arrayt,
       });
     });
   }, []);
 
   const toggleViewCar = () => {
-    setCarView(!carView);
+    dispatch({ type: 'carView', payload: !carView });
   };
 
   const refreshCar = () => {
-    setMakes(['makes']);
-    setModels(['models']);
-    setOptions(['options']);
-    setCar({
-      year: '',
-      make: '',
-      model: '',
-      option: '',
-      id: '',
-      gpm: '',
-      em: '',
+    dispatch({ type: 'makes', payload: ['makes'] });
+    dispatch({ type: 'models', payload: ['models'] });
+    dispatch({ type: 'options', payload: ['options'] });
+    dispatch({
+      type: 'car',
+      payload: {
+        year: '',
+        make: '',
+        model: '',
+        option: '',
+        id: '',
+        gpm: '',
+        em: '',
+      },
     });
-    setJourney({ distance: 0, CO2: 0 });
+    dispatch({ type: 'journey', payload: { distance: 0, CO2: 0 } });
   };
 
   const makesOfYear = (year) => {
-    setMakes(['makes']);
-    setModels(['models']);
-    setOptions(['options']);
-    setCar({
-      year,
-      make: '',
-      model: '',
-      option: '',
-      id: '',
-      gpm: '',
-      em: '',
+    dispatch({ type: 'makes', payload: ['makes'] });
+    dispatch({ type: 'models', payload: ['models'] });
+    dispatch({ type: 'options', payload: ['options'] });
+    dispatch({
+      type: 'car',
+      payload: {
+        year,
+        make: '',
+        model: '',
+        option: '',
+        id: '',
+        gpm: '',
+        em: '',
+      },
     });
-    setJourney({ distance: journey.distance, CO2: 0 });
+    dispatch({
+      type: 'journey',
+      payload: { distance: journey.distance, CO2: 0 },
+    });
 
     if (year !== null) {
       getMakes(year).then(({ data }) => {
-        setMakes(data.menuItem.map((item) => item.value));
+        let array = [];
+        data.menuItem.map((item) => array.push(item.value));
+        dispatch({ type: 'makes', payload: array });
       });
     }
   };
 
   const modelsOfMakes = (make) => {
-    setModels(['models']);
-    setOptions(['options']);
-    setCar({
-      year: car.year,
-      make,
-      model: '',
-      option: '',
-      id: '',
-      gpm: '',
-      em: '',
+    dispatch({ type: 'models', payload: ['models'] });
+    dispatch({ type: 'options', payload: ['options'] });
+    dispatch({
+      type: 'car',
+      payload: {
+        year: car.year,
+        make,
+        model: '',
+        option: '',
+        id: '',
+        gpm: '',
+        em: '',
+      },
     });
-    setJourney({ distance: journey.distance, CO2: 0 });
+    dispatch({
+      type: 'journey',
+      payload: { distance: journey.distance, CO2: 0 },
+    });
 
     if (make !== null) {
       getModels(make, car).then(({ data }) => {
-        setModels(data.menuItem.map((item) => item.value));
+        let array = [];
+        data.menuItem.map((item) => array.push(item.value));
+        dispatch({ type: 'models', payload: array });
       });
     }
   };
 
   const optionsOfModels = (model) => {
-    setOptions(['options']);
-    setCar({
-      year: car.year,
-      make: car.make,
-      model,
-      option: '',
-      id: '',
-      gpm: '',
-      em: '',
+    dispatch({ type: 'options', payload: ['options'] });
+    dispatch({
+      type: 'car',
+      payload: {
+        year: car.year,
+        make: car.make,
+        model,
+        option: '',
+        id: '',
+        gpm: '',
+        em: '',
+      },
     });
-    setJourney({ distance: journey.distance, CO2: 0 });
+
+    dispatch({
+      type: 'journey',
+      payload: { distance: journey.distance, CO2: 0 },
+    });
     if (model !== null) {
       getOptions(model, car).then(({ data }) => {
-        if (data.menuItem.length) setOptions(data.menuItem.map((item) => item));
-        else {
-          setOptions([data.menuItem]);
+        let array = [];
+        if (data.menuItem.length) {
+          data.menuItem.map((item) => array.push(item));
+          dispatch({ type: 'options', payload: array });
+        } else {
+          dispatch({ type: 'options', payload: [data.menuItem] });
         }
       });
     }
   };
 
   const getCarID = (option) => {
+    console.log('hello');
     if (option !== null) {
-      setCar({
-        year: car.year,
-        make: car.make,
-        model: car.model,
-        option: option.text,
-        id: option.value,
-        gpm: '',
-        em: '',
+      dispatch({
+        type: 'car',
+        payload: {
+          year: car.year,
+          make: car.make,
+          model: car.model,
+          option: option.text,
+          id: option.value,
+          gpm: '',
+          em: '',
+        },
       });
     } else {
-      setCar({
-        year: car.year,
-        make: car.make,
-        model: car.model,
-        option: '',
-        id: '',
-        gpm: '',
+      dispatch({
+        type: 'car',
+        payload: {
+          year: car.year,
+          make: car.make,
+          model: car.model,
+          option: '',
+          id: '',
+          gpm: '',
+          em: '',
+        },
       });
-      setJourney({ distance: journey.distance, CO2: 0 });
+
+      dispatch({
+        type: 'journey',
+        payload: { distance: journey.distance, CO2: 0 },
+      });
     }
   };
 
   const toggleDistanceUnits = (event) => {
     event.preventDefault();
-    setDistanceUnits(event.target.value);
-    setJourney({ distance: journey.distance, CO2: 0 });
+    dispatch({ type: 'distanceUnits', payload: event.target.value });
+    dispatch({
+      type: 'journey',
+      payload: { distance: journey.distance, CO2: 0 },
+    });
   };
 
   const journeyDistance = (distance) => {
-    setJourney({ distance, CO2: 0 });
+    dispatch({
+      type: 'journey',
+      payload: { distance, CO2: 0 },
+    });
   };
 
   const journeyCO2 = () => {
     getGPM(car.id).then(({ data }) => {
-      setCar({
-        year: car.year,
-        make: car.make,
-        model: car.model,
-        option: car.option,
-        id: car.id,
-        gpm: +data.co2TailpipeGpm,
-        em: +data.cityE,
+      dispatch({
+        type: 'car',
+        payload: {
+          year: car.year,
+          make: car.make,
+          model: car.model,
+          option: car.option,
+          id: car.id,
+          gpm: +data.co2TailpipeGpm,
+          em: +data.cityE,
+        },
       });
-      if (+data.co2TailpipeGpm !== 0) setElec(false);
-      else setElec(true);
+
+      if (+data.co2TailpipeGpm !== 0)
+        dispatch({ type: 'elec', payload: false });
+      else dispatch({ type: 'elec', payload: true });
 
       let CO2 = carUnits(data, journey, distanceUnits, carCompare);
       let carCompareCO2 = compareCO2(carCompare, journey, distanceUnits);
 
-      setJourney({
-        distance: journey.distance,
-        CO2,
+      dispatch({
+        type: 'journey',
+        payload: { distance: journey.distance, CO2 },
       });
-      setCarCompare({
-        intensity: carCompare.intensity,
-        compare: carCompare.compare,
-        CO2: carCompareCO2,
+      dispatch({
+        type: 'carCompare',
+        payload: {
+          intensity: carCompare.intensity,
+          compare: carCompare.compare,
+          CO2: carCompareCO2,
+        },
       });
     });
   };
   const toggleViewHome = () => {
-    setHomeView(!homeView);
+    dispatch({ type: 'homeView', payload: !homeView });
   };
 
   const refreshHome = () => {
-    setPostcode('');
-    setHomeUse({ elec: 0, gas: 0, CO2: 0 });
-    setdateRange({
-      from: moment().subtract(1, 'd').format('YYYY-MM-DDTHH:MM'),
-      to: moment().format('YYYY-MM-DDTHH:MM'),
+    dispatch({ type: 'postcode', payload: '' });
+    dispatch({ type: 'homeUse', payload: { elec: 0, gas: 0, CO2: 0 } });
+    dispatch({
+      type: 'dateRange',
+      payload: {
+        from: moment().subtract(1, 'd').format('YYYY-MM-DDTHH:MM'),
+        to: moment().format('YYYY-MM-DDTHH:MM'),
+      },
     });
   };
 
   const updatePostcode = (postcode) => {
-    setPostcode(postcode);
+    dispatch({ type: 'postcode', payload: postcode });
   };
 
   const updateRange = (date, option) => {
     if (option === 'from') {
-      setdateRange({ from: date, to: dateRange.to });
-    } else setdateRange({ from: dateRange.from, to: date });
+      dispatch({
+        type: 'dateRange',
+        payload: { from: date, to: dateRange.to },
+      });
+    } else
+      dispatch({
+        type: 'dateRange',
+        payload: { from: dateRange.from, to: date },
+      });
   };
 
   const changeElecUnits = (event) => {
     event.preventDefault();
-    setElecUnits(event.target.value);
+    dispatch({ type: 'elecUnits', payload: event.target.value });
   };
 
   const updateElecUse = (elec) => {
-    setHomeUse({
-      intensity: homeUse.intensity,
-      elec,
-      gas: homeUse.gas,
-      CO2: 0,
+    dispatch({
+      type: 'homeUse',
+      payload: {
+        intensity: homeUse.intensity,
+        elec,
+        gas: homeUse.gas,
+        CO2: 0,
+      },
     });
   };
 
   const changeGasUnits = (event) => {
     event.preventDefault();
-    setGasUnits(event.target.value);
+    dispatch({ type: 'gasUnits', payload: event.target.value });
   };
 
   const updateGasUse = (gas) => {
-    setHomeUse({
-      intensity: homeUse.intensity,
-      elec: homeUse.elec,
-      gas,
-      CO2: 0,
+    dispatch({
+      type: 'homeUse',
+      payload: {
+        intensity: homeUse.intensity,
+        elec: homeUse.elec,
+        gas,
+        CO2: 0,
+      },
     });
   };
 
@@ -342,18 +412,25 @@ function App() {
 
       CO2 = homeUnits(intensity, gasUnits, elecUnits, homeUse);
 
-      setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
-
-      setGenMix(generationMix);
+      dispatch({
+        type: 'homeUse',
+        payload: {
+          intensity,
+          elec: homeUse.elec,
+          gas: homeUse.gas,
+          CO2,
+        },
+      });
+      dispatch({ type: 'genMix', payload: generationMix });
     });
   };
 
   const toggleResultsView = () => {
-    setResultView(!resultsView);
+    dispatch({ type: 'resultsView', payload: !resultsView });
   };
 
   const toggleWorldView = () => {
-    setWorldView(!worldView);
+    dispatch({ type: 'worldView', payload: !worldView });
   };
 
   return (
