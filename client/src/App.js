@@ -487,7 +487,7 @@ function App() {
       <center>
         {carView && homeView ? null : <h1>What energy do I use?</h1>}
         {carView ? null : (
-          <Tooltip title="My Car" placement="right-start">
+          <Tooltip title="My Car" placement="left-start">
             <DriveEtaSharp
               className="button"
               color="primary"
