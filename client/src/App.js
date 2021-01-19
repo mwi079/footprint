@@ -12,6 +12,7 @@ import {
   getCO2Trend,
   getTempTrend,
 } from './ApiService';
+import { homeUnits, carUnits, compareCO2 } from './helper';
 import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
@@ -54,7 +55,6 @@ function App() {
 
   const generationMix = Array(9).fill(0);
   const erange = 0.3; //kWh per mile
-  const milestokm = 1.60934;
 
   useEffect(() => {
     getYears().then(({ data }) => {
@@ -224,59 +224,21 @@ function App() {
         gpm: +data.co2TailpipeGpm,
         em: +data.cityE,
       });
-      if (+data.co2TailpipeGpm !== 0) {
-        setElec(false);
-        if (distanceUnits === 'km') {
-          setJourney({
-            distance: journey.distance,
-            CO2: (+journey.distance * +data.co2TailpipeGpm) / milestokm / 1000,
-          });
-          setCarCompare({
-            intensity: carCompare.intensity,
-            compare: carCompare.compare,
-            CO2: (carCompare.compare * journey.distance) / milestokm,
-          });
-        } else {
-          setJourney({
-            distance: journey.distance,
-            CO2: (+journey.distance * +data.co2TailpipeGpm) / 1000,
-          });
-          setCarCompare({
-            intensity: carCompare.intensity,
-            compare: carCompare.compare,
-            CO2: carCompare.compare * journey.distance,
-          });
-        }
-      } else {
-        setElec(true);
-        if (distanceUnits === 'km') {
-          setJourney({
-            distance: journey.distance,
-            CO2:
-              (+journey.distance *
-                (+data.cityE / 100 / milestokm) *
-                +carCompare.intensity) /
-              milestokm /
-              1000,
-          });
-        } else {
-          console.log('cityE', data.cityE);
-          console.log('carCompare', carCompare.intensity);
-          console.log(journey.distance);
-          console.log(
-            (+journey.distance * (+data.cityE / 100) * +carCompare.intensity) /
-              1000
-          );
-          setJourney({
-            distance: journey.distance,
-            CO2:
-              (+journey.distance *
-                (+data.cityE / 100) *
-                +carCompare.intensity) /
-              1000,
-          });
-        }
-      }
+      if (+data.co2TailpipeGpm !== 0) setElec(false);
+      else setElec(true);
+
+      let CO2 = carUnits(data, journey, distanceUnits, carCompare);
+      let carCompareCO2 = compareCO2(carCompare, journey, distanceUnits);
+
+      setJourney({
+        distance: journey.distance,
+        CO2,
+      });
+      setCarCompare({
+        intensity: carCompare.intensity,
+        compare: carCompare.compare,
+        CO2: carCompareCO2,
+      });
     });
   };
   const toggleViewHome = () => {
@@ -334,10 +296,6 @@ function App() {
     let sum = 0;
     let entries = 0;
     let intensity = 0;
-    const gasCO2kw = 185; //g per kWh- varies with efficiency of boiler
-    const kWhtoft3 = 31.7; // 31.7kW per 100 cubic ft
-    const kWhtom3 = 11.2; // 11.2 kWh per cubic meter
-    const kWhtoMJ = 3.6; // 3.6 MJ  per kWh
     let CO2;
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
@@ -351,34 +309,11 @@ function App() {
       intensity = sum / entries;
       generationMix.map((entry, i) => {
         return (generationMix[i] =
-          (Math.round(entry / entries) * 100) / 100).toFixed(2); //(Math.round(journey.CO2 * 100) / 100).toFixed(2);
+          (Math.round(entry / entries) * 100) / 100).toFixed(2);
       });
 
-      if (gasUnits === 'kWh' && elecUnits === 'kWh') {
-        CO2 = (+homeUse.elec * +intensity + homeUse.gas * gasCO2kw) / 1000;
-      } else if (gasUnits === 'kWh' && elecUnits === 'MJ') {
-        CO2 =
-          ((+homeUse.elec / kWhtoMJ) * +intensity + homeUse.gas * gasCO2kw) /
-          1000;
-      } else if (gasUnits === 'm3' && elecUnits === 'kWh') {
-        CO2 =
-          (+homeUse.elec * +intensity + homeUse.gas * kWhtom3 * gasCO2kw) /
-          1000;
-      } else if (gasUnits === 'm3' && elecUnits === 'MJ') {
-        CO2 =
-          ((+homeUse.elec / kWhtoMJ) * +intensity +
-            homeUse.gas * kWhtom3 * gasCO2kw) /
-          1000;
-      } else if (gasUnits === 'ft3' && elecUnits === 'kWh') {
-        CO2 =
-          (+homeUse.elec * +intensity + homeUse.gas * kWhtoft3 * gasCO2kw) /
-          1000;
-      } else if (gasUnits === 'ft3' && elecUnits === 'MJ') {
-        CO2 =
-          ((+homeUse.elec / kWhtoMJ) * +intensity +
-            homeUse.gas * kWhtoft3 * gasCO2kw) /
-          1000;
-      }
+      CO2 = homeUnits(intensity, gasUnits, elecUnits, homeUse);
+
       setHomeUse({ intensity, elec: homeUse.elec, gas: homeUse.gas, CO2 });
 
       setGenMix(generationMix);
