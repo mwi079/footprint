@@ -42,6 +42,11 @@ export default function Trend({
       },
     ],
     options: {
+      title: {
+        display: true,
+        text: 'Atmospheric CO2 versus Temperature',
+        fontSize: 20,
+      },
       scales: {
         xAxes: [{ type: 'time' }],
         yAxes: [

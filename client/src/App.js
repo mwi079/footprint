@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+//import { Store } from './reducer';
 import { DriveEtaSharp, HomeSharp, PublicSharp } from '@material-ui/icons';
 import { Tooltip } from '@material-ui/core';
 import {
@@ -22,6 +23,33 @@ import moment from 'moment';
 import './index.css';
 
 function App() {
+  // const [state, dispatch] = Store();
+  // const {
+  //   carView,
+  //   homeView,
+  //   resultsView,
+  //   worldView,
+  //   car,
+  //   journey,
+  //   distanceUnits,
+  //   carCompare,
+  //   elec,
+  //   years,
+  //   makes,
+  //   models,
+  //   options,
+  //   postcode,
+  //   dateRange,
+  //   homeUse,
+  //   genMix,
+  //   gasUnits,
+  //   elecUnits,
+  //   CO2Trend,
+  //   CO2timeTrend,
+  //   tempTrend,
+  //   tempTimeTrend,
+  // }=state
+
   const [carView, setCarView] = useState(false);
   const [homeView, setHomeView] = useState(false);
   const [resultsView, setResultView] = useState(false);
