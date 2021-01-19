@@ -18,7 +18,7 @@ import Car from './car/car';
 import Footprint from './footprint/footprint';
 import Home from './houseForms/home';
 import Trend from './trends/trend';
-import { ReactComponent as Foot } from './footprint.svg';
+import { ReactComponent as Foot } from './footprintbig.svg';
 import moment from 'moment';
 import './index.css';
 

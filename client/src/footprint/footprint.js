@@ -1,6 +1,7 @@
 import './footprint.css';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import { CloseSharp } from '@material-ui/icons';
+import { ReactComponent as Foot } from '../footprintsmall.svg';
 
 export default function footprint({
   journey,
@@ -19,6 +20,7 @@ export default function footprint({
 
   const compare = {
     options: {
+      scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
       legend: { display: false },
       title: {
         display: true,
@@ -145,7 +147,10 @@ export default function footprint({
 
       {+carCO2 || +homeCO2 ? (
         <div className="results">
-          <h2>Results</h2>
+          <center>
+            <Foot id="foot" />
+          </center>
+
           {+carCO2 && !elec ? (
             <Bar data={compare} options={compare.options} />
           ) : null}
