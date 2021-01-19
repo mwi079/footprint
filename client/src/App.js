@@ -85,7 +85,6 @@ function App() {
             month = 1;
           }
           let year = entry.time.slice(0, 4);
-          console.log(month);
           let time = `${year}-${month}`;
           time = moment(time).format('YYYY-MM');
           setTempTimeTrend((tempTimeTrend) => [...tempTimeTrend, time]);
@@ -396,22 +395,6 @@ function App() {
 
   return (
     <div className="overallContainer">
-      <center>
-        <h1>What's my footprint?</h1>
-      </center>
-      <center>
-        {carView ? null : (
-          <Tooltip title="My Car" placement="right-start">
-            <DriveEtaSharp
-              className="button"
-              color="primary"
-              style={{ fontSize: 200 }}
-              onClick={toggleViewCar}
-              title="My Car"
-            />
-          </Tooltip>
-        )}
-      </center>
       {carView ? (
         <Car
           years={years}
@@ -432,18 +415,6 @@ function App() {
           refreshCar={refreshCar}
         />
       ) : null}
-      <center>
-        {homeView ? null : (
-          <Tooltip title="My Home" placement="right-start">
-            <HomeSharp
-              className="button"
-              color="primary"
-              style={{ fontSize: 200 }}
-              onClick={toggleViewHome}
-            />
-          </Tooltip>
-        )}
-      </center>
       {homeView ? (
         <Home
           homeCO2={homeCO2}
@@ -462,17 +433,6 @@ function App() {
           changeGasUnits={changeGasUnits}
         />
       ) : null}
-      <center className>
-        {resultsView ? null : (
-          <>
-            <p></p>
-            <Tooltip title="My Footprint" placement="right-start">
-              <Foot className="button" id="foot" onClick={toggleResultsView} />
-            </Tooltip>
-            <p></p>
-          </>
-        )}
-      </center>
       {resultsView ? (
         <Footprint
           journey={journey}
@@ -483,19 +443,55 @@ function App() {
           toggleResultsView={toggleResultsView}
         />
       ) : null}
+
       <center>
-        <h1>Why does it matter?</h1>
-      </center>
-      <center>
-        {worldView ? null : (
-          <Tooltip title="Our Home" placement="right-start">
-            <PublicSharp
+        {carView && homeView ? null : <h1>What energy do I use?</h1>}
+        {carView ? null : (
+          <Tooltip title="My Car" placement="right-start">
+            <DriveEtaSharp
               className="button"
               color="primary"
               style={{ fontSize: 200 }}
-              onClick={toggleWorldView}
+              onClick={toggleViewCar}
+              title="My Car"
             />
           </Tooltip>
+        )}
+        {homeView ? null : (
+          <Tooltip title="My Home" placement="right-start">
+            <HomeSharp
+              className="button"
+              color="primary"
+              style={{ fontSize: 200 }}
+              onClick={toggleViewHome}
+            />
+          </Tooltip>
+        )}
+
+        {resultsView ? null : (
+          <>
+            <h1>What's my footprint?</h1>
+            <p></p>
+            <Tooltip title="My Footprint" placement="right-start">
+              <Foot className="button" id="foot" onClick={toggleResultsView} />
+            </Tooltip>
+            <p></p>
+          </>
+        )}
+      </center>
+      <center>
+        {worldView ? null : (
+          <>
+            <h1>Why does it matter?</h1>
+            <Tooltip title="Our Home" placement="right-start">
+              <PublicSharp
+                className="button"
+                color="primary"
+                style={{ fontSize: 200 }}
+                onClick={toggleWorldView}
+              />
+            </Tooltip>
+          </>
         )}
       </center>
       {worldView ? (

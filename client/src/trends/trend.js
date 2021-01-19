@@ -11,6 +11,8 @@ export default function Trend({
 }) {
   const dataCO2 = [];
   const dataTemp = [];
+  const degrees = 'o'.sup();
+  console.log(degrees);
 
   for (let i = 0; i < CO2Trend.length; i++) {
     dataCO2.push({ x: CO2timeTrend[i], y: CO2Trend[i] });
@@ -26,15 +28,17 @@ export default function Trend({
         label: 'CO2',
         yAxisID: 'CO2',
         data: dataCO2,
-        backgroundColor: 'rgb(54, 162, 235,0.75)',
+        borderColor: 'rgb(54, 162, 235,0.75)',
         hoverBackgroundColor: 'rgb(54, 162, 235,1.5)',
+        fill: false,
       },
       {
         label: 'Temperature',
         yAxisID: 'Temperature',
         data: dataTemp,
-        backgroundColor: 'rgb(255, 205, 86,0.75)',
+        borderColor: 'rgb(255, 205, 86,0.75)',
         hoverBackgroundColor: 'rgb(255, 205, 86,1.5)',
+        fill: false,
       },
     ],
     options: {
@@ -48,12 +52,20 @@ export default function Trend({
             position: 'left',
             setmin: 385,
             suggestedMax: 415,
+            scaleLabel: {
+              display: true,
+              labelString: 'Atmospheric CO2 (ppm)',
+            },
           },
           {
             label: 'Temparature',
             id: 'Temperature',
             type: 'linear',
             position: 'right',
+            scaleLabel: {
+              display: true,
+              labelString: `Mean surface temperature (degrees C)`,
+            },
           },
         ],
       },
