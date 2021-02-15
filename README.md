@@ -4,11 +4,12 @@
 
 In this application you input the details of a car journey and of your domestic electricity use and you'll be given your carbon footprint, as well as other useful information, for both.
 
+A demo of this site can be seen at https://priceless-meitner-cc344e.netlify.app/
+
 **Further work**
 
 -Add a backend and authentication to track their footprint over time
 
--Deploy
 
 
 
