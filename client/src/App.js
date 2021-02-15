@@ -397,7 +397,6 @@ function App() {
     let CO2;
 
     getIntensity(dateRange.from, dateRange.to, postcode).then(({ data }) => {
-      console.log(data);
       entries += data.data.data.length;
       data.data.data.map((entry) => {
         entry.generationmix.map((subEntry, i) => {
