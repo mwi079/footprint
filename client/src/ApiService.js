@@ -29,6 +29,7 @@ export function getGPM(id) {
 }
 
 export function getIntensity(from, to, postcode) {
+  console.log(`${base_elecUrl}${from}/${to}/postcode/${toOutcode(postcode)}`);
   return get(`${base_elecUrl}${from}/${to}/postcode/${toOutcode(postcode)}`);
 }
 
