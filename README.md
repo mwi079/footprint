@@ -1,5 +1,5 @@
 # Footprint
-<code><img height="200" alt="Footprint Logo" src="https://github.com/mwi079/footprint/blob/main/client/assets/footprint.PNG"></code> 
+<code><img height="200" width="200" alt="Footprint Logo" src="https://github.com/mwi079/footprint/blob/main/client/assets/footprint.PNG"></code> 
 
 
 ## Puting everything I've learned so far on my coding journey together into something I'm passionate about.
@@ -14,20 +14,20 @@ Alternatively, if you prefer to run locally, after download run "npm i" in the r
 ## User experience
 
 The user is first greated by the main menu with responsive a descriptive buttons. 
-<code><img height="400" alt="Footprint Homepage" src="https://github.com/mwi079/footprint/blob/main/client/assets/homepage.PNG"></code> 
+<code><img height="400" width="600" alt="Footprint Homepage" src="https://github.com/mwi079/footprint/blob/main/client/assets/homepage.PNG"></code> 
 
 The user first enter the information of the car they drive and a typical journay they take.
-<code><img height="400" alt="Car Menu" src="https://github.com/mwi079/footprint/blob/main/client/assets/carMenu.PNG"></code> 
+<code><img height="400" width="600" alt="Car Menu" src="https://github.com/mwi079/footprint/blob/main/client/assets/carMenu.PNG"></code> 
 
 And now they input the typical domestic electricity use over a chosen period and at a chosen postcode (carbon production per kW of energy is region specific in the UK)
-<code><img height="400" alt="Home Menu" src="https://github.com/mwi079/footprint/blob/main/client/assets/homeMenu.PNG"></code> 
+<code><img height="400" width="600" alt="Home Menu" src="https://github.com/mwi079/footprint/blob/main/client/assets/homeMenu.PNG"></code> 
 
 The app now calculates the results and displayes them in the form of beautiful and responsive graphs
-<code><img height="400" alt="Results 1" src="https://github.com/mwi079/footprint/blob/main/client/assets/results1.PNG"></code> 
-<code><img height="400" alt="Results 2" src="https://github.com/mwi079/footprint/blob/main/client/assets/results2.PNG"></code>
+<code><img height="400" width="600" alt="Results 1" src="https://github.com/mwi079/footprint/blob/main/client/assets/results1.PNG"></code> 
+<code><img height="400" width="600" alt="Results 2" src="https://github.com/mwi079/footprint/blob/main/client/assets/results2.PNG"></code>
 
 Finally the user can see a graph explaining why this is all so important...
-<code><img height="400" alt="Temperatur vs atm CO2 trend" src="https://github.com/mwi079/footprint/blob/main/client/assets/graph.PNG"></code>
+<code><img height="400" width="600" alt="Temperatur vs atm CO2 trend" src="https://github.com/mwi079/footprint/blob/main/client/assets/graph.PNG"></code>
 
 
 ## Tech Stack
