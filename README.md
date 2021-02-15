@@ -1,4 +1,6 @@
 # Footprint
+<code><img height="200" alt="Footprint Logo" src="https://github.com/mwi079/footprint/client/assets/footprint.png"></code> 
+
 
 ## Puting everything I've learned so far on my coding journey together into something I'm passionate about.
 
@@ -8,6 +10,10 @@ In this application you input the details of a car journey and of your domestic 
 
 A demo of this site can be seen at https://priceless-meitner-cc344e.netlify.app/
 Alternatively, if you prefer to run locally, after download run "npm i2 in the root and then again in the client folder. Then run "npm start" in the client folder. 
+
+## User experience
+
+<code><img height="500" alt="Viral Logo" src="https://github.com/Bobik808/Viral/blob/main/assets/mainGame2.PNG"></code> 
 
 
 ## Tech Stack
